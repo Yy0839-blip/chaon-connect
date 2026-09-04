@@ -28,7 +28,7 @@ const initial: State = {
 type Ctx = State & {
   ready: boolean;
   setProfile: (nickname: string, avatar: string) => void;
-  completeMission: (id: string) => { point: number; badge?: string } | null;
+  completeMission: (id: string) => { point: number; badge?: string | undefined } | null;
   toggleProgram: (id: string) => boolean;
   addPost: (text: string, place: string) => void;
   toggleLike: (id: string) => void;
