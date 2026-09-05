@@ -17,25 +17,26 @@ export const Route = createFileRoute("/spaces")({
   component: Spaces,
 });
 
-const IMAGE_BASE =
-  "https://raw.githubusercontent.com/Yy0839-blip/chaon-connect/main/public/images";
+// 이미지를 외부 GitHub raw 주소가 아니라 Vercel에 함께 배포된
+// public/images 경로에서 직접 불러옵니다. 모바일에서도 안정적으로 표시됩니다.
+const IMAGE_BASE = "/images";
 
 const photoBySpace: Record<string, { image: string; alt: string }> = {
   dance: {
     image: `${IMAGE_BASE}/dance.jpg`,
-    alt: "차오름 실제 복층 공간 사진",
+    alt: "차오름 실제 다목적 공간 사진",
   },
   beam: {
     image: `${IMAGE_BASE}/projector.jpg`,
-    alt: "차오름 실제 창가 공간 사진",
+    alt: "차오름 실제 창가·프로젝터 공간 사진",
   },
   board: {
     image: `${IMAGE_BASE}/boardgame.jpg`,
-    alt: "차오름 실제 보드게임 사진",
+    alt: "차오름 실제 보드게임 공간 사진",
   },
   loft: {
     image: `${IMAGE_BASE}/loft.jpg`,
-    alt: "차오름 실제 다목적 공간 사진",
+    alt: "차오름 실제 복층 공간 사진",
   },
 };
 
@@ -79,7 +80,8 @@ function Spaces() {
                       src={photo.image}
                       alt={photo.alt}
                       className="absolute inset-0 h-full w-full object-cover"
-                      loading="lazy"
+                      loading="eager"
+                      decoding="async"
                     />
                   </div>
                 )}
