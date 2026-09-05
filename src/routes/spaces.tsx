@@ -5,20 +5,38 @@ import { ShareCTA } from "@/components/chaon/ShareCTA";
 import { spaces } from "@/data/chaon";
 
 export const Route = createFileRoute("/spaces")({
-  head: () => ({ meta: [
-    { title: "놀거리 둘러보기 · 차오름 | 차온 CHAON" },
-    { name: "description", content: "차오름에서 친구들과 즐길 수 있는 놀거리를 찾아봐요." },
-  ] }),
+  head: () => ({
+    meta: [
+      { title: "놀거리 둘러보기 · 차오름 | 차온 CHAON" },
+      {
+        name: "description",
+        content: "차오름에서 친구들과 즐길 수 있는 놀거리를 찾아봐요.",
+      },
+    ],
+  }),
   component: Spaces,
 });
 
-const CHAON_SPACE_IMAGE = "https://raw.githubusercontent.com/Yy0839-blip/chaon-connect/main/public/images/chaon-spaces.jpg";
+const IMAGE_BASE =
+  "https://raw.githubusercontent.com/Yy0839-blip/chaon-connect/main/public/images";
 
-const photoBySpace: Record<string, { position: string; alt: string }> = {
-  dance: { position: "left top", alt: "차오름 실제 복층 공간 사진" },
-  beam: { position: "right top", alt: "차오름 실제 창가 공간 사진" },
-  board: { position: "right bottom", alt: "차오름 실제 보드게임 사진" },
-  loft: { position: "left bottom", alt: "차오름 실제 다목적 공간 사진" },
+const photoBySpace: Record<string, { image: string; alt: string }> = {
+  dance: {
+    image: `${IMAGE_BASE}/dance.jpg`,
+    alt: "차오름 실제 복층 공간 사진",
+  },
+  beam: {
+    image: `${IMAGE_BASE}/projector.jpg`,
+    alt: "차오름 실제 창가 공간 사진",
+  },
+  board: {
+    image: `${IMAGE_BASE}/boardgame.jpg`,
+    alt: "차오름 실제 보드게임 사진",
+  },
+  loft: {
+    image: `${IMAGE_BASE}/loft.jpg`,
+    alt: "차오름 실제 다목적 공간 사진",
+  },
 };
 
 const tone = {
@@ -29,27 +47,89 @@ const tone = {
 } as const;
 
 function Spaces() {
-  return <AppShell>
-    <PageTitle kicker="CHAON PLAY" title="오늘 뭐 하고 놀까?" sub="차오름에서 친구들과 즐길 수 있는 놀거리를 골라봐요." />
-    <div className="mt-5 rounded-3xl bg-card p-4 shadow-card">
-      <p className="text-sm font-bold text-foreground">차오름 실제 공간 미리 보기</p>
-      <p className="mt-1 text-xs leading-5 text-muted-foreground">차오름에서 직접 촬영한 실제 공간 사진으로 확인해보세요.</p>
-    </div>
-    <div className="mt-4 space-y-4">
-      {spaces.map((s) => {
-        const photo = photoBySpace[s.id];
-        return <div key={s.id}>
-          <div className={`overflow-hidden rounded-3xl shadow-card ${tone[s.tone]}`}>
-            {photo && <div className="relative h-44 w-full overflow-hidden bg-muted"><div aria-label={photo.alt} role="img" className="absolute inset-0 bg-no-repeat" style={{ backgroundImage: `url("${CHAON_SPACE_IMAGE}")`, backgroundSize: "200% 200%", backgroundPosition: photo.position }} /></div>}
-            <div className="p-5">
-              <div className="flex items-start justify-between gap-3"><div><h2 className="font-display text-2xl leading-tight">{s.name}</h2><p className="mt-1 text-xs opacity-85">{s.tagline}</p></div><span className="shrink-0 rounded-full bg-white/20 px-2.5 py-1 text-[11px] font-bold">{s.open ? "지금 이용 가능" : "이용 불가"}</span></div>
-              <ul className="mt-4 flex flex-wrap gap-2">{s.can.map((c) => <li key={c} className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold">{c}</li>)}</ul>
+  return (
+    <AppShell>
+      <PageTitle
+        kicker="CHAON PLAY"
+        title="오늘 뭐 하고 놀까?"
+        sub="차오름에서 친구들과 즐길 수 있는 놀거리를 골라봐요."
+      />
+
+      <div className="mt-5 rounded-3xl bg-card p-4 shadow-card">
+        <p className="text-sm font-bold text-foreground">
+          차오름 실제 공간 미리 보기
+        </p>
+        <p className="mt-1 text-xs leading-5 text-muted-foreground">
+          차오름에서 직접 촬영한 실제 공간 사진으로 확인해보세요.
+        </p>
+      </div>
+
+      <div className="mt-4 space-y-4">
+        {spaces.map((s) => {
+          const photo = photoBySpace[s.id];
+
+          return (
+            <div key={s.id}>
+              <div
+                className={`overflow-hidden rounded-3xl shadow-card ${tone[s.tone]}`}
+              >
+                {photo && (
+                  <div className="relative h-44 w-full overflow-hidden bg-muted">
+                    <img
+                      src={photo.image}
+                      alt={photo.alt}
+                      className="absolute inset-0 h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+
+                <div className="p-5">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <h2 className="font-display text-2xl leading-tight">
+                        {s.name}
+                      </h2>
+                      <p className="mt-1 text-xs opacity-85">{s.tagline}</p>
+                    </div>
+
+                    <span className="shrink-0 rounded-full bg-white/20 px-2.5 py-1 text-[11px] font-bold">
+                      {s.open ? "지금 이용 가능" : "이용 불가"}
+                    </span>
+                  </div>
+
+                  <ul className="mt-4 flex flex-wrap gap-2">
+                    {s.can.map((c) => (
+                      <li
+                        key={c}
+                        className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold"
+                      >
+                        {c}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <Link
+                to="/meetup"
+                search={{ space: s.id }}
+                className="tap mt-2 flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-card font-display text-sm shadow-card"
+              >
+                <CalendarPlus size={17} /> {s.name} 같이 할 약속 만들기
+              </Link>
             </div>
-          </div>
-          <Link to="/meetup" search={{ space: s.id }} className="tap mt-2 flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-card font-display text-sm shadow-card"><CalendarPlus size={17} /> {s.name} 같이 할 약속 만들기</Link>
-        </div>;
-      })}
-    </div>
-    <div className="mt-6"><ShareCTA label="친구한테 놀거리 공유하기" message="차오름에서 같이 놀자! 뭐 할지 골라봐." tone="navy" /></div>
-  </AppShell>;
+          );
+        })}
+      </div>
+
+      <div className="mt-6">
+        <ShareCTA
+          label="친구한테 놀거리 공유하기"
+          message="차오름에서 같이 놀자! 뭐 할지 골라봐."
+          tone="navy"
+        />
+      </div>
+    </AppShell>
+  );
 }
