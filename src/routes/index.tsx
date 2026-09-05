@@ -1,9 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, CalendarDays, MapPin, UsersRound } from "lucide-react";
+import { ArrowRight, CalendarDays, MapPin, Music2, UsersRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/chaon/AppShell";
 import { Celebrate, type CelebrateData } from "@/components/chaon/Celebrate";
-import { ShareCTA } from "@/components/chaon/ShareCTA";
 import { missions, recommendations, spaces } from "@/data/chaon";
 import { localEvents, nearbyYouthFacilities } from "@/data/localEvents";
 import { useChaon } from "@/lib/chaon-store";
@@ -79,36 +78,42 @@ function Home() {
 
   const todayMission = missions.find((m) => !doneMissions.includes(m.id)) ?? missions[0]!;
   const missionDone = doneMissions.includes(todayMission.id);
-  const openSpaces = chaonStatus.isOpen ? spaces.filter((s) => s.open) : [];
   const character = characters[characterIndex]!;
 
   return (
     <AppShell>
       <Celebrate data={celebrate} onClose={() => setCelebrate(null)} />
 
-      <section className="rise relative overflow-hidden pt-5">
+      <section className="rise relative overflow-hidden pt-5 pb-1">
         <div className="absolute -right-7 -top-8 size-28 rounded-full bg-primary/15 blur-2xl" />
-        <div className={`absolute right-0 top-0 grid size-20 place-items-center overflow-hidden rounded-[26px] ${character.bg}`}>
-          <img src={character.image} alt={character.name} className="size-20 object-contain drop-shadow-sm" />
+        <div className={`absolute right-0 top-0 grid size-[68px] place-items-center overflow-hidden rounded-[22px] ${character.bg}`}>
+          <img src={character.image} alt={character.name} className="size-[68px] object-contain drop-shadow-sm" />
         </div>
-        <p className="pr-24 text-[11px] font-bold tracking-[0.2em] text-muted-foreground">대야동 청소년 공간 · 차오름</p>
-        <h1 className="mt-3 max-w-[340px] break-keep font-display text-[clamp(1.9rem,8.5vw,2.7rem)] font-bold leading-[1.08] tracking-[-0.04em]">
+        <p className="pr-20 text-[10px] font-bold tracking-[0.18em] text-muted-foreground">대야동 청소년 공간 · 차오름</p>
+        <h1 className="mt-3 max-w-[300px] break-keep font-display text-[clamp(1.85rem,8vw,2.45rem)] font-bold leading-[1.08] tracking-[-0.04em]">
           {nickname ? `${nickname}아, ` : ""}오늘 뭐 <span className="text-grad">하지?</span>
         </h1>
-        <p className="mt-2 max-w-[320px] text-sm text-muted-foreground">하고 싶은 걸 고르고, 친구와 바로 약속해요.</p>
+        <p className="mt-2 max-w-[290px] text-sm text-muted-foreground">하고 싶은 걸 고르고, 친구와 바로 약속해요.</p>
       </section>
 
-      <section className="rise mt-5 rounded-[28px] bg-night p-4 text-navy-foreground shadow-card ring-1 ring-white/10">
-        <div className="flex items-center justify-between gap-3"><div className="flex items-center gap-2.5"><span className={`size-2.5 rounded-full ${chaonStatus.isOpen ? "bg-lime" : "bg-red-400"}`} /><span className="font-display text-base">{chaonStatus.label}</span></div><span className="text-right text-[11px] font-bold text-navy-foreground/55">{chaonStatus.hours}</span></div>
-        {chaonStatus.isOpen ? <div className="mt-3 grid grid-cols-2 gap-2">{openSpaces.slice(0, 4).map((s) => <Link key={s.id} to="/spaces/$spaceId" params={{ spaceId: s.id }} className="tap flex min-h-11 items-center justify-between rounded-2xl bg-white/10 px-3 text-xs font-bold">{s.name}<span className="size-1.5 rounded-full bg-lime" /></Link>)}</div> : <div className="mt-3 rounded-2xl bg-white/10 px-3 py-3 text-center text-xs font-bold text-navy-foreground/70">{chaonStatus.hours === "오늘은 쉬는 날" ? "오늘은 차오름이 쉬는 날이에요." : "지금은 운영시간이 아니에요."}</div>}
-        <div className="mt-3"><ShareCTA /></div>
+      <section className="rise mt-4 rounded-[22px] bg-night px-4 py-3.5 text-navy-foreground shadow-card ring-1 ring-white/10">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-2.5"><span className={`size-2.5 shrink-0 rounded-full ${chaonStatus.isOpen ? "bg-lime" : "bg-red-400"}`} /><span className="font-display text-sm">{chaonStatus.label}</span></div>
+          <span className="shrink-0 text-[10px] font-bold text-navy-foreground/55">{chaonStatus.hours}</span>
+        </div>
       </section>
 
-      <section className="mt-8 rounded-[28px] bg-primary p-5 text-primary-foreground shadow-card">
+      <section className="mt-7 rounded-[28px] bg-primary p-5 text-primary-foreground shadow-card">
         <div className="flex items-start justify-between gap-3"><div><p className="text-[10px] font-bold tracking-[0.18em] text-primary-foreground/65">MEET UP</p><h2 className="mt-1 font-display text-2xl leading-tight">오늘 같이 놀 사람?</h2><p className="mt-1.5 text-xs text-primary-foreground/70">보드게임, 춤, 영화… 하고 싶은 걸 약속으로 만들어보세요.</p></div><UsersRound size={28} strokeWidth={2.1} /></div>
         {meetups.length ? <div className="mt-4 space-y-2">{meetups.slice(0, 2).map((m) => <div key={m.id} className="rounded-2xl bg-white/12 p-3"><div className="flex items-center gap-2"><span className="text-lg">{m.avatar}</span><p className="min-w-0 flex-1 truncate font-display text-base">{m.title}</p><span className="text-[11px] font-bold">{m.joinedPeople}/{m.maxPeople}</span></div><p className="mt-1 text-[11px] text-primary-foreground/65">{m.date} · {m.time} · {m.place}</p></div>)}</div> : <div className="mt-4 rounded-2xl bg-white/12 px-3 py-3 text-xs font-bold text-primary-foreground/75">아직 약속이 없어요. 네가 첫 약속을 만들어봐!</div>}
         <Link to="/community" className="tap mt-3 flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-white font-display text-sm text-primary">약속 추가하기 <ArrowRight size={16} /></Link>
       </section>
+
+      <Link to="/music" className="tap mt-4 flex items-center gap-3 rounded-[22px] bg-card p-4 shadow-card">
+        <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-secondary text-primary"><Music2 size={19} /></span>
+        <span className="min-w-0 flex-1"><span className="block text-[10px] font-bold tracking-[0.16em] text-primary">TODAY'S MUSIC</span><span className="mt-0.5 block font-display text-base">오늘 들을 노래, 투표하기</span><span className="mt-0.5 block text-xs text-muted-foreground">추천하고 +1P도 받아요.</span></span>
+        <ArrowRight size={17} className="shrink-0 text-muted-foreground" />
+      </Link>
 
       <section className="mt-8"><div className="mb-3 flex items-end justify-between"><div><p className="text-[10px] font-bold tracking-[0.18em] text-primary">PICK FOR YOU</p><h2 className="mt-0.5 font-display text-xl">오늘은 이거 어때?</h2></div><Link to="/spaces" className="text-xs font-bold text-primary">더 보기 →</Link></div><div className="flex snap-x gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">{recommendations.map((r) => <Link key={r.id} to="/spaces/$spaceId" params={{ spaceId: r.spaceId }} className={`tap min-w-[210px] snap-start rounded-[26px] p-4 shadow-card ${toneClass[r.tone]}`}><span className="grid size-12 place-items-center overflow-hidden rounded-2xl bg-white/25"><img src={spaceImage(r.spaceId)} alt="" className="size-full object-cover" /></span><span className="mt-4 block font-display text-lg leading-tight">{r.title}</span><span className="mt-1 block text-xs opacity-70">{r.sub}</span><span className="mt-4 flex items-center gap-1 text-xs font-bold">사진·정보 보기 <ArrowRight size={14} /></span></Link>)}</div></section>
 
