@@ -9,6 +9,18 @@ import {
 } from "react";
 import { missions, seedPosts, type Post } from "@/data/chaon";
 
+export type Meetup = {
+  id: string;
+  title: string;
+  date: string;
+  time: string;
+  place: string;
+  maxPeople: number;
+  joinedPeople: number;
+  creator: string;
+  avatar: string;
+};
+
 type State = {
   nickname: string;
   avatar: string;
@@ -19,9 +31,10 @@ type State = {
   joinedEvents: string[];
   visits: number;
   posts: Post[];
+  meetups: Meetup[];
 };
 
-const KEY = "chaon.state.v1";
+const KEY = "chaon.state.v2";
 
 const initial: State = {
   nickname: "",
@@ -29,10 +42,11 @@ const initial: State = {
   points: 240,
   badges: ["첫 방문", "게임왕", "친구왕"],
   doneMissions: [],
-  joinedPrograms: ["p3"],
+  joinedPrograms: [],
   joinedEvents: [],
   visits: 4,
   posts: seedPosts,
+  meetups: [],
 };
 
 type Ctx = State & {
@@ -43,6 +57,8 @@ type Ctx = State & {
   toggleEvent: (id: string) => boolean;
   addPost: (text: string, place: string) => void;
   toggleLike: (id: string) => void;
+  addMeetup: (input: Omit<Meetup, "id" | "creator" | "avatar" | "joinedPeople">) => void;
+  toggleMeetup: (id: string) => boolean;
 };
 
 const ChaonContext = createContext<Ctx | null>(null);
@@ -149,9 +165,53 @@ export function ChaonProvider({ children }: { children: ReactNode }) {
     }));
   }, []);
 
+  const addMeetup = useCallback(
+    (input: Omit<Meetup, "id" | "creator" | "avatar" | "joinedPeople">) => {
+      setState((s) => ({
+        ...s,
+        meetups: [
+          {
+            ...input,
+            id: `meetup-${Date.now()}`,
+            creator: s.nickname || "익명의 차오름러",
+            avatar: s.avatar,
+            joinedPeople: 1,
+          },
+          ...s.meetups,
+        ],
+      }));
+    },
+    [],
+  );
+
+  const toggleMeetup = useCallback((id: string) => {
+    let joined = false;
+    setState((s) => ({
+      ...s,
+      meetups: s.meetups.map((m) => {
+        if (m.id !== id) return m;
+        if (m.joinedPeople >= m.maxPeople) return m;
+        joined = true;
+        return { ...m, joinedPeople: m.joinedPeople + 1 };
+      }),
+    }));
+    return joined;
+  }, []);
+
   const value = useMemo<Ctx>(
-    () => ({ ...state, ready, setProfile, completeMission, toggleProgram, toggleEvent, addPost, toggleLike }),
-    [state, ready, setProfile, completeMission, toggleProgram, toggleEvent, addPost, toggleLike],
+    () => ({
+      ...state,
+      ready,
+      setProfile,
+      completeMission,
+      toggleProgram,
+      toggleEvent,
+      addPost,
+      toggleLike,
+      addMeetup,
+      toggleMeetup,
+    }),
+    [state, ready, setProfile, completeMission, toggleProgram, toggleEvent, addPost, toggleLike, addMeetup, toggleMeetup],
   );
 
   return <ChaonContext.Provider value={value}>{children}</ChaonContext.Provider>;
