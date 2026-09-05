@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, CalendarDays, Gamepad2, MapPin, Sparkles, UsersRound } from "lucide-react";
+import { ArrowRight, CalendarDays, Gamepad2, MapPin, Phone, Sparkles, UsersRound } from "lucide-react";
 import { AppShell } from "@/components/chaon/AppShell";
 import { localEvents, nearbyYouthFacilities } from "@/data/localEvents";
 import { useChaon } from "@/lib/chaon-store";
@@ -37,6 +37,12 @@ function Home() {
           <Link to="/meetup" className="tap flex min-h-12 items-center justify-center gap-1 rounded-2xl bg-white/15 font-display text-sm text-primary-foreground">약속 만들기 <UsersRound size={15} /></Link>
         </div>
       </section>
+
+      <a href="tel:031-310-4316" className="tap mt-3 flex min-h-14 items-center gap-3 rounded-[24px] bg-card px-4 py-3.5 shadow-card" aria-label="차오름 031-310-4316으로 전화하기">
+        <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-primary text-primary-foreground"><Phone size={18} /></span>
+        <span className="min-w-0 flex-1"><span className="block text-[10px] font-bold tracking-[0.14em] text-primary">CHAORUM CONTACT</span><span className="block font-display text-base">차오름에 바로 전화하기</span><span className="block text-xs text-muted-foreground">031-310-4316</span></span>
+        <ArrowRight size={17} className="shrink-0 text-primary" />
+      </a>
 
       <section className="mt-3 rounded-[28px] bg-card p-4 shadow-card">
         <div className="flex items-center justify-between"><div><p className="text-[10px] font-bold tracking-[0.16em] text-primary">THIS IS ME</p><h2 className="mt-1 font-display text-xl">{nickname || "나를 표현해볼까요?"}</h2></div><span className="rounded-full bg-lime/25 px-2.5 py-1 text-[10px] font-bold text-primary">{points}P</span></div>
