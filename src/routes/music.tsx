@@ -11,15 +11,13 @@ export const Route = createFileRoute("/music")({
   component: Music,
 });
 
-const baseVotes = [8, 6, 5, 7];
-
 function Music() {
   const { musicVotes, musicVoteCounts, musicRecommendations, voteMusic, addMusicRecommendation } = useChaon();
   const [title, setTitle] = useState("");
   const [artist, setArtist] = useState("");
   const date = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
   const voted = musicVotes[date];
-  const counts = dailySongs.map((song, index) => Math.max(baseVotes[index]!, musicVoteCounts[`${date}:${song.id}`] || 0));
+  const counts = dailySongs.map((song) => musicVoteCounts[`${date}:${song.id}`] || 0);
   const total = counts.reduce((a, b) => a + b, 0);
   const recommend = () => {
     if (!title.trim() || !artist.trim()) return toast.error("노래 제목과 가수를 적어주세요.");
@@ -36,11 +34,13 @@ function Music() {
       <p className="mt-1 text-xs text-primary-foreground/70">하루에 한 번 투표하고 +1P · 결과는 오늘 자정까지</p>
       <div className="mt-4 space-y-2">{dailySongs.map((song, index) => {
         const selected = voted === song.id;
+        const percent = total ? (counts[index] / total) * 100 : 0;
         return <button key={song.id} type="button" disabled={!!voted} onClick={() => { if (voteMusic(date, song.id)) toast.success("투표 완료! +1P"); }} className={`tap w-full rounded-2xl p-3 text-left ${selected ? "bg-white text-primary" : "bg-white/12 text-primary-foreground"}`}>
           <div className="flex items-center gap-3"><span className={`grid size-10 place-items-center rounded-xl ${selected ? "bg-primary/10" : "bg-white/10"}`}><Music2 size={17} /></span><span className="min-w-0 flex-1"><span className="block font-display text-base">{song.title}</span><span className={`block text-[11px] ${selected ? "text-primary/60" : "text-primary-foreground/60"}`}>{song.artist} · {song.mood}</span></span><span className="text-xs font-bold">{counts[index]}표</span>{selected ? <Check size={19} /> : null}</div>
-          <div className={`mt-2 h-1.5 overflow-hidden rounded-full ${selected ? "bg-primary/10" : "bg-white/10"}`}><div className="h-full rounded-full bg-current" style={{ width: `${(counts[index] / total) * 100}%` }} /></div>
+          <div className={`mt-2 h-1.5 overflow-hidden rounded-full ${selected ? "bg-primary/10" : "bg-white/10"}`}><div className="h-full rounded-full bg-current" style={{ width: `${percent}%` }} /></div>
         </button>;
       })}</div>
+      {!total ? <p className="mt-3 text-center text-[11px] text-primary-foreground/55">아직 투표가 없어요. 첫 투표를 해보세요!</p> : null}
     </section>
     <section className="mt-7 rounded-[28px] bg-card p-5 shadow-card">
       <div><p className="text-[10px] font-bold tracking-[0.18em] text-primary">REQUEST A SONG</p><h2 className="mt-1 font-display text-xl">듣고 싶은 노래 추천하기</h2><p className="mt-1 text-xs text-muted-foreground">추천한 노래는 다음날 투표 후보로 모을 수 있어요.</p></div>
