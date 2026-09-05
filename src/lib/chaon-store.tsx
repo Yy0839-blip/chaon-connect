@@ -33,6 +33,7 @@ export type MusicRecommendation = {
 type State = {
   nickname: string;
   avatar: string;
+  profileTags: string[];
   points: number;
   badges: string[];
   doneMissions: string[];
@@ -50,6 +51,7 @@ const KEY = "chaon.state.v3";
 const initial: State = {
   nickname: "",
   avatar: "🐤",
+  profileTags: ["친구랑 노는 걸 좋아해"],
   points: 240,
   badges: ["첫 방문", "게임왕", "친구왕"],
   doneMissions: [],
@@ -65,6 +67,7 @@ const initial: State = {
 type Ctx = State & {
   ready: boolean;
   setProfile: (nickname: string, avatar: string) => void;
+  setProfileTags: (tags: string[]) => void;
   completeMission: (id: string) => { point: number; badge?: string | undefined } | null;
   toggleProgram: (id: string) => boolean;
   toggleEvent: (id: string) => boolean;
@@ -102,6 +105,7 @@ export function ChaonProvider({ children }: { children: ReactNode }) {
   }, [state, ready]);
 
   const setProfile = useCallback((nickname: string, avatar: string) => setState((s) => ({ ...s, nickname, avatar })), []);
+  const setProfileTags = useCallback((tags: string[]) => setState((s) => ({ ...s, profileTags: tags.slice(0, 5) })), []);
 
   const completeMission = useCallback((id: string) => {
     const mission = missions.find((m) => m.id === id);
@@ -155,7 +159,7 @@ export function ChaonProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, musicRecommendations: [{ id: `song-${Date.now()}`, title, artist, date, recommender: s.nickname || "익명의 차오름러" }, ...s.musicRecommendations].slice(0, 30) }));
   }, []);
 
-  const value = useMemo<Ctx>(() => ({ ...state, ready, setProfile, completeMission, toggleProgram, toggleEvent, addPost, toggleLike, addMeetup, toggleMeetup, voteMusic, addMusicRecommendation }), [state, ready, setProfile, completeMission, toggleProgram, toggleEvent, addPost, toggleLike, addMeetup, toggleMeetup, voteMusic, addMusicRecommendation]);
+  const value = useMemo<Ctx>(() => ({ ...state, ready, setProfile, setProfileTags, completeMission, toggleProgram, toggleEvent, addPost, toggleLike, addMeetup, toggleMeetup, voteMusic, addMusicRecommendation }), [state, ready, setProfile, setProfileTags, completeMission, toggleProgram, toggleEvent, addPost, toggleLike, addMeetup, toggleMeetup, voteMusic, addMusicRecommendation]);
   return <ChaonContext.Provider value={value}>{children}</ChaonContext.Provider>;
 }
 
