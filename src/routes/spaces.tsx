@@ -13,22 +13,10 @@ export const Route = createFileRoute("/spaces")({
 });
 
 const photoBySpace: Record<string, { position: string; alt: string }> = {
-  dance: {
-    position: "0% 100%",
-    alt: "차오름 실제 다목적 공간 사진",
-  },
-  beam: {
-    position: "0% 100%",
-    alt: "차오름 실제 다목적 공간 사진",
-  },
-  board: {
-    position: "100% 100%",
-    alt: "차오름 실제 보드게임 공간 사진",
-  },
-  loft: {
-    position: "0% 0%",
-    alt: "차오름 실제 복층 독서 공간 사진",
-  },
+  dance: { position: "0% 100%", alt: "차오름 실제 다목적 공간 사진" },
+  beam: { position: "0% 100%", alt: "차오름 실제 다목적 공간 사진" },
+  board: { position: "100% 100%", alt: "차오름 실제 보드게임 공간 사진" },
+  loft: { position: "0% 0%", alt: "차오름 실제 복층 독서 공간 사진" },
 };
 
 const tone = {
@@ -51,7 +39,7 @@ function Spaces() {
       {spaces.map((s) => {
         const photo = photoBySpace[s.id];
         return <div key={s.id}>
-          <article className={`overflow-hidden rounded-3xl shadow-card ${tone[s.tone]}`}>
+          <div className={`overflow-hidden rounded-3xl shadow-card ${tone[s.tone]}`}>
             {photo && <div
               role="img"
               aria-label={photo.alt}
@@ -68,7 +56,7 @@ function Spaces() {
               </div>
               <ul className="mt-4 flex flex-wrap gap-2">{s.can.map((c) => <li key={c} className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold">{c}</li>)}</ul>
             </div>
-          </article>
+          </div>
           <Link to="/meetup" search={{ space: s.id }} className="tap mt-2 flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-card font-display text-sm shadow-card"><CalendarPlus size={17} /> {s.name} 같이 할 약속 만들기</Link>
         </div>;
       })}
