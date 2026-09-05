@@ -13,6 +13,30 @@ export type LocalEvent = {
 
 export const localEvents: LocalEvent[] = [
   {
+    id: "siheung-breaking-battle-2026",
+    month: "9월",
+    title: "2026 시흥 브레이킹 배틀",
+    date: "2026.09.12",
+    time: "13:00–21:00",
+    place: "은계호수공원 야외무대",
+    audience: "청소년·청년·지역주민",
+    description: "키즈 배틀, 체험부스, 스트릿 문화와 쇼케이스가 함께 열리는 시흥 브레이킹 행사",
+    sourceLabel: "시흥시 공식 안내 보도자료 기반",
+    sourceUrl: "https://www.welfarehello.com/community/hometownNews/0a8d05d8-ec39-45d8-bd2a-1e08a96a3c4e",
+  },
+  {
+    id: "daeya-lantern-festival-2026",
+    month: "9월",
+    title: "2026 다시 대야로 등불축제",
+    date: "2026.09.11–09.12",
+    time: "9/12 청소년 예술 무대 15:00–17:00",
+    place: "대야삼2어린이공원 일원",
+    audience: "대야동 주민·청소년·지역주민",
+    description: "등불 터널·포토존·문화공연·주민 체험이 열리고, 9월 12일에는 청소년 예술 무대도 진행돼요.",
+    sourceLabel: "시흥시·시흥시도시재생지원센터 행사 안내",
+    sourceUrl: "https://www.korea.info/news/view.php?no=4922",
+  },
+  {
     id: "siheung-youth-center-september-craft",
     month: "9월",
     title: "한가위, 손끝에 담다",
