@@ -12,6 +12,8 @@ export const Route = createFileRoute("/spaces")({
   component: Spaces,
 });
 
+const CHAON_SPACE_IMAGE = "https://raw.githubusercontent.com/Yy0839-blip/chaon-connect/main/public/images/chaon-spaces.jpg";
+
 const photoBySpace: Record<string, { position: string; alt: string }> = {
   dance: { position: "left top", alt: "차오름 실제 복층 공간 사진" },
   beam: { position: "right top", alt: "차오름 실제 창가 공간 사진" },
@@ -38,7 +40,7 @@ function Spaces() {
         const photo = photoBySpace[s.id];
         return <div key={s.id}>
           <div className={`overflow-hidden rounded-3xl shadow-card ${tone[s.tone]}`}>
-            {photo && <div className="relative h-44 w-full overflow-hidden bg-muted"><div aria-label={photo.alt} role="img" className="absolute inset-0 bg-no-repeat" style={{ backgroundImage: "url('/images/chaon-spaces.jpg')", backgroundSize: "200% 200%", backgroundPosition: photo.position }} /></div>}
+            {photo && <div className="relative h-44 w-full overflow-hidden bg-muted"><div aria-label={photo.alt} role="img" className="absolute inset-0 bg-no-repeat" style={{ backgroundImage: `url("${CHAON_SPACE_IMAGE}")`, backgroundSize: "200% 200%", backgroundPosition: photo.position }} /></div>}
             <div className="p-5">
               <div className="flex items-start justify-between gap-3"><div><h2 className="font-display text-2xl leading-tight">{s.name}</h2><p className="mt-1 text-xs opacity-85">{s.tagline}</p></div><span className="shrink-0 rounded-full bg-white/20 px-2.5 py-1 text-[11px] font-bold">{s.open ? "지금 이용 가능" : "이용 불가"}</span></div>
               <ul className="mt-4 flex flex-wrap gap-2">{s.can.map((c) => <li key={c} className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold">{c}</li>)}</ul>
