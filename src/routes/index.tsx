@@ -37,20 +37,22 @@ function Home() {
     <AppShell>
       <Celebrate data={celebrate} onClose={() => setCelebrate(null)} />
 
-      <section className="rise pt-6">
+      <section className="rise relative pt-6">
+        <span className="float-slow absolute right-2 top-4 text-4xl">🛼</span>
         <p className="text-[11px] font-bold tracking-[0.24em] text-muted-foreground">
           대야동 차오름 · 주민센터 2층
         </p>
-        <h1 className="mt-2 font-display text-[2.9rem] leading-[0.98] tracking-tight">
-          오늘 뭐<br />
-          하지?
+        <h1 className="mt-2 font-display text-[3.2rem] leading-[0.98] tracking-tight">
+          오늘 뭐
+          <br />
+          <span className="text-grad">하지?</span>
         </h1>
         <p className="mt-2.5 text-sm text-muted-foreground">
           {nickname ? `${nickname}아, ` : ""}차오름에서 오늘을 더 재밌게 🎈
         </p>
       </section>
 
-      <section className="rise mt-5 rounded-3xl bg-navy p-4 text-navy-foreground shadow-card">
+      <section className="rise mt-5 rounded-3xl bg-night p-4 text-navy-foreground shadow-card ring-1 ring-white/10">
         <div className="flex items-center justify-between">
           <span className="flex items-center gap-2">
             <span className="relative flex size-2.5">
@@ -138,7 +140,7 @@ function Home() {
       </section>
 
       <section className="mt-7">
-        <Link to="/events" className="tap block rounded-3xl bg-limeGrad p-5 shadow-card">
+        <Link to="/events" className="tap shine block rounded-3xl bg-limeGrad p-5 shadow-card glow-lime">
           <p className="text-[11px] font-bold tracking-[0.22em] text-lime-foreground/70">{yearEnd.title}</p>
           <p className="mt-1.5 font-display text-2xl leading-tight text-lime-foreground">{yearEnd.slogan}</p>
           <div className="mt-3 flex flex-wrap gap-2">
