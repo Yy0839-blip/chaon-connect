@@ -16,6 +16,7 @@ type State = {
   badges: string[];
   doneMissions: string[];
   joinedPrograms: string[];
+  joinedEvents: string[];
   visits: number;
   posts: Post[];
 };
@@ -29,6 +30,7 @@ const initial: State = {
   badges: ["첫 방문", "게임왕", "친구왕"],
   doneMissions: [],
   joinedPrograms: ["p3"],
+  joinedEvents: [],
   visits: 4,
   posts: seedPosts,
 };
@@ -38,6 +40,7 @@ type Ctx = State & {
   setProfile: (nickname: string, avatar: string) => void;
   completeMission: (id: string) => { point: number; badge?: string | undefined } | null;
   toggleProgram: (id: string) => boolean;
+  toggleEvent: (id: string) => boolean;
   addPost: (text: string, place: string) => void;
   toggleLike: (id: string) => void;
 };
@@ -105,6 +108,18 @@ export function ChaonProvider({ children }: { children: ReactNode }) {
     return joined;
   }, []);
 
+  const toggleEvent = useCallback((id: string) => {
+    let joined = false;
+    setState((s) => {
+      joined = !s.joinedEvents.includes(id);
+      return {
+        ...s,
+        joinedEvents: joined ? [...s.joinedEvents, id] : s.joinedEvents.filter((e) => e !== id),
+      };
+    });
+    return joined;
+  }, []);
+
   const addPost = useCallback((text: string, place: string) => {
     setState((s) => ({
       ...s,
@@ -135,8 +150,8 @@ export function ChaonProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<Ctx>(
-    () => ({ ...state, ready, setProfile, completeMission, toggleProgram, addPost, toggleLike }),
-    [state, ready, setProfile, completeMission, toggleProgram, addPost, toggleLike],
+    () => ({ ...state, ready, setProfile, completeMission, toggleProgram, toggleEvent, addPost, toggleLike }),
+    [state, ready, setProfile, completeMission, toggleProgram, toggleEvent, addPost, toggleLike],
   );
 
   return <ChaonContext.Provider value={value}>{children}</ChaonContext.Provider>;
