@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as MissionsRouteImport } from './routes/missions'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as SpacesRouteImport } from './routes/spaces'
 
 const IndexRoute = IndexRouteImport.update({
@@ -35,6 +36,11 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProgramsRoute = ProgramsRouteImport.update({
+  id: '/programs',
+  path: '/programs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SpacesRoute = SpacesRouteImport.update({
   id: '/spaces',
   path: '/spaces',
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/community': typeof CommunityRoute
   '/missions': typeof MissionsRoute
   '/profile': typeof ProfileRoute
+  '/programs': typeof ProgramsRoute
   '/spaces': typeof SpacesRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/community': typeof CommunityRoute
   '/missions': typeof MissionsRoute
   '/profile': typeof ProfileRoute
+  '/programs': typeof ProgramsRoute
   '/spaces': typeof SpacesRoute
 }
 export interface FileRoutesById {
@@ -61,14 +69,23 @@ export interface FileRoutesById {
   '/community': typeof CommunityRoute
   '/missions': typeof MissionsRoute
   '/profile': typeof ProfileRoute
+  '/programs': typeof ProgramsRoute
   '/spaces': typeof SpacesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/community' | '/missions' | '/profile' | '/spaces'
+  fullPaths:
+    '/' | '/community' | '/missions' | '/profile' | '/programs' | '/spaces'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/community' | '/missions' | '/profile' | '/spaces'
-  id: '__root__' | '/' | '/community' | '/missions' | '/profile' | '/spaces'
+  to: '/' | '/community' | '/missions' | '/profile' | '/programs' | '/spaces'
+  id:
+    | '__root__'
+    | '/'
+    | '/community'
+    | '/missions'
+    | '/profile'
+    | '/programs'
+    | '/spaces'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,6 +93,7 @@ export interface RootRouteChildren {
   CommunityRoute: typeof CommunityRoute
   MissionsRoute: typeof MissionsRoute
   ProfileRoute: typeof ProfileRoute
+  ProgramsRoute: typeof ProgramsRoute
   SpacesRoute: typeof SpacesRoute
 }
 
@@ -109,6 +127,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/programs': {
+      id: '/programs'
+      path: '/programs'
+      fullPath: '/programs'
+      preLoaderRoute: typeof ProgramsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/spaces': {
       id: '/spaces'
       path: '/spaces'
@@ -124,6 +149,7 @@ const rootRouteChildren: RootRouteChildren = {
   CommunityRoute: CommunityRoute,
   MissionsRoute: MissionsRoute,
   ProfileRoute: ProfileRoute,
+  ProgramsRoute: ProgramsRoute,
   SpacesRoute: SpacesRoute,
 }
 export const routeTree = rootRouteImport
