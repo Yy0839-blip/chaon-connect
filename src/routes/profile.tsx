@@ -20,7 +20,8 @@ export const Route = createFileRoute("/profile")({
 });
 
 function Profile() {
-  const { nickname, avatar, points, badges, doneMissions, joinedPrograms, visits, setProfile } = useChaon();
+  const { nickname, avatar, points, badges, doneMissions, joinedPrograms, visits, setProfile } =
+    useChaon();
   const joined = programs.filter((p) => joinedPrograms.includes(p.id));
 
   return (
@@ -29,7 +30,9 @@ function Profile() {
 
       <section className="rise mt-5 rounded-3xl bg-night p-5 text-navy-foreground shadow-card">
         <div className="flex items-center gap-3">
-          <span className="grid size-16 place-items-center rounded-2xl bg-white/15 text-3xl">{avatar}</span>
+          <span className="grid size-16 place-items-center rounded-2xl bg-white/15 text-3xl">
+            {avatar}
+          </span>
           <span>
             <span className="block font-display text-2xl">{nickname || "익명의 차오름러"}</span>
             <span className="block text-xs text-navy-foreground/60">차오름 방문 {visits}회</span>

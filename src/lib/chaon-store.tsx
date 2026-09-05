@@ -1,4 +1,12 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import { missions, seedPosts, type Post } from "@/data/chaon";
 
 type State = {
@@ -8,6 +16,7 @@ type State = {
   badges: string[];
   doneMissions: string[];
   joinedPrograms: string[];
+  joinedEvents: string[];
   visits: number;
   posts: Post[];
 };
@@ -21,6 +30,7 @@ const initial: State = {
   badges: ["첫 방문", "게임왕", "친구왕"],
   doneMissions: [],
   joinedPrograms: ["p3"],
+  joinedEvents: [],
   visits: 4,
   posts: seedPosts,
 };
@@ -30,6 +40,7 @@ type Ctx = State & {
   setProfile: (nickname: string, avatar: string) => void;
   completeMission: (id: string) => { point: number; badge?: string | undefined } | null;
   toggleProgram: (id: string) => boolean;
+  toggleEvent: (id: string) => boolean;
   addPost: (text: string, place: string) => void;
   toggleLike: (id: string) => void;
 };
@@ -74,7 +85,10 @@ export function ChaonProvider({ children }: { children: ReactNode }) {
         ...s,
         doneMissions: [...s.doneMissions, id],
         points: s.points + mission.point,
-        badges: mission.badge && !s.badges.includes(mission.badge) ? [...s.badges, mission.badge] : s.badges,
+        badges:
+          mission.badge && !s.badges.includes(mission.badge)
+            ? [...s.badges, mission.badge]
+            : s.badges,
       };
     });
     return applied ? { point: mission.point, badge: mission.badge } : null;
@@ -86,7 +100,21 @@ export function ChaonProvider({ children }: { children: ReactNode }) {
       joined = !s.joinedPrograms.includes(id);
       return {
         ...s,
-        joinedPrograms: joined ? [...s.joinedPrograms, id] : s.joinedPrograms.filter((p) => p !== id),
+        joinedPrograms: joined
+          ? [...s.joinedPrograms, id]
+          : s.joinedPrograms.filter((p) => p !== id),
+      };
+    });
+    return joined;
+  }, []);
+
+  const toggleEvent = useCallback((id: string) => {
+    let joined = false;
+    setState((s) => {
+      joined = !s.joinedEvents.includes(id);
+      return {
+        ...s,
+        joinedEvents: joined ? [...s.joinedEvents, id] : s.joinedEvents.filter((e) => e !== id),
       };
     });
     return joined;
@@ -122,8 +150,8 @@ export function ChaonProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<Ctx>(
-    () => ({ ...state, ready, setProfile, completeMission, toggleProgram, addPost, toggleLike }),
-    [state, ready, setProfile, completeMission, toggleProgram, addPost, toggleLike],
+    () => ({ ...state, ready, setProfile, completeMission, toggleProgram, toggleEvent, addPost, toggleLike }),
+    [state, ready, setProfile, completeMission, toggleProgram, toggleEvent, addPost, toggleLike],
   );
 
   return <ChaonContext.Provider value={value}>{children}</ChaonContext.Provider>;

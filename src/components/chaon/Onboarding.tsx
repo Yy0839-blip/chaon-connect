@@ -13,7 +13,9 @@ export function Onboarding() {
   return (
     <div className="fixed inset-0 z-50 grid place-items-end bg-navy/50 backdrop-blur-sm sm:place-items-center">
       <div className="popin w-full max-w-[430px] rounded-t-[32px] bg-card p-6 pb-8 shadow-pop sm:rounded-[32px]">
-        <p className="text-[11px] font-bold tracking-[0.24em] text-muted-foreground">WELCOME TO CHAON</p>
+        <p className="text-[11px] font-bold tracking-[0.24em] text-muted-foreground">
+          WELCOME TO CHAON
+        </p>
         <h2 className="mt-2 font-display text-3xl leading-tight">
           차온에 오신 걸<br />
           환영해! 🎈

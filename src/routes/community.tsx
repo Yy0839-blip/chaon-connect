@@ -27,11 +27,17 @@ function Community() {
 
   return (
     <AppShell>
-      <PageTitle kicker="CHAON COMMUNITY" title="지금 다들 뭐 해?" sub="차오름에서 있었던 일 자랑하기" />
+      <PageTitle
+        kicker="CHAON COMMUNITY"
+        title="지금 다들 뭐 해?"
+        sub="차오름에서 있었던 일 자랑하기"
+      />
 
       <div className="rise mt-5 rounded-3xl bg-card p-4 shadow-card">
         <div className="flex items-center gap-2">
-          <span className="grid size-9 place-items-center rounded-full bg-sky/60 text-base">{avatar}</span>
+          <span className="grid size-9 place-items-center rounded-full bg-sky/60 text-base">
+            {avatar}
+          </span>
           <span className="text-sm font-bold">{nickname || "익명의 차오름러"}</span>
         </div>
         <textarea
@@ -48,7 +54,9 @@ function Community() {
               type="button"
               onClick={() => setPlace(s.name)}
               className={`tap rounded-full px-3 py-1.5 text-xs font-bold ${
-                place === s.name ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                place === s.name
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground"
               }`}
             >
               {s.emoji} {s.name}
@@ -73,7 +81,9 @@ function Community() {
         {posts.map((p) => (
           <article key={p.id} className="rounded-3xl bg-card p-4 shadow-card">
             <div className="flex items-center gap-2">
-              <span className="grid size-9 place-items-center rounded-full bg-muted text-base">{p.avatar}</span>
+              <span className="grid size-9 place-items-center rounded-full bg-muted text-base">
+                {p.avatar}
+              </span>
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-bold leading-tight">{p.nickname}</span>
                 <span className="block text-[11px] text-muted-foreground">
