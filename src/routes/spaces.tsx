@@ -13,10 +13,10 @@ export const Route = createFileRoute("/spaces")({
 });
 
 const photoBySpace: Record<string, { position: string; alt: string }> = {
-  dance: { position: "0% 100%", alt: "차오름 실제 다목적 공간 사진" },
-  beam: { position: "0% 100%", alt: "차오름 실제 다목적 공간 사진" },
-  board: { position: "100% 100%", alt: "차오름 실제 보드게임 공간 사진" },
-  loft: { position: "0% 0%", alt: "차오름 실제 복층 독서 공간 사진" },
+  dance: { position: "0% 0%", alt: "차오름 실제 다목적 공간 사진" },
+  beam: { position: "100% 0%", alt: "차오름 실제 다목적 공간 사진" },
+  board: { position: "0% 100%", alt: "차오름 실제 보드게임 공간 사진" },
+  loft: { position: "100% 100%", alt: "차오름 실제 복층 독서 공간 사진" },
 };
 
 const tone = {
@@ -43,8 +43,12 @@ function Spaces() {
             {photo && <div
               role="img"
               aria-label={photo.alt}
-              className="h-44 w-full bg-cover"
-              style={{ backgroundImage: "url(/images/chaon-spaces.jpg)", backgroundPosition: photo.position }}
+              className="h-44 w-full bg-cover bg-no-repeat"
+              style={{
+                backgroundImage: "url('/images/chaon-spaces.jpg')",
+                backgroundSize: "200% 200%",
+                backgroundPosition: photo.position,
+              }}
             />}
             <div className="p-5">
               <div className="flex items-start justify-between gap-3">
