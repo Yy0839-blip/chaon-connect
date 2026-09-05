@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/chaon/AppShell";
 import { Celebrate, type CelebrateData } from "@/components/chaon/Celebrate";
 import { ShareCTA } from "@/components/chaon/ShareCTA";
@@ -31,11 +31,87 @@ const toneClass = {
   sky: "bg-sky text-sky-foreground",
 } as const;
 
+type ChaonStatus = {
+  isOpen: boolean;
+  label: string;
+  hours: string;
+};
+
+function getChaonStatus(): ChaonStatus {
+  const now = new Date();
+  const day = now.getDay();
+  const minutes = now.getHours() * 60 + now.getMinutes();
+
+  // 일요일(0), 월요일(1) 휴무
+  if (day === 0 || day === 1) {
+    return {
+      isOpen: false,
+      label: "차오름 휴무",
+      hours: "오늘은 쉬는 날",
+    };
+  }
+
+  // 화요일 ~ 금요일: 15:00 ~ 20:00
+  if (day >= 2 && day <= 5) {
+    const open = 15 * 60;
+    const close = 20 * 60;
+
+    const isOpen = minutes >= open && minutes < close;
+
+    return {
+      isOpen,
+      label: isOpen ? "차오름 OPEN" : "차오름 CLOSED",
+      hours: "화–금 15:00–20:00",
+    };
+  }
+
+  // 토요일: 10:00 ~ 18:00
+  if (day === 6) {
+    const open = 10 * 60;
+    const close = 18 * 60;
+
+    const isOpen = minutes >= open && minutes < close;
+
+    return {
+      isOpen,
+      label: isOpen ? "차오름 OPEN" : "차오름 CLOSED",
+      hours: "토 10:00–18:00",
+    };
+  }
+
+  return {
+    isOpen: false,
+    label: "차오름 CLOSED",
+    hours: "",
+  };
+}
+
 function Home() {
   const { nickname, doneMissions, completeMission } = useChaon();
   const [celebrate, setCelebrate] = useState<CelebrateData | null>(null);
-  const todayMission = missions.find((m) => !doneMissions.includes(m.id)) ?? missions[0]!;
-  const openSpaces = spaces.filter((s) => s.open);
+  const [chaonStatus, setChaonStatus] = useState<ChaonStatus>(() =>
+    getChaonStatus(),
+  );
+
+  // 현재 시간을 기준으로 운영 상태를 1분마다 갱신
+  useEffect(() => {
+    const updateStatus = () => {
+      setChaonStatus(getChaonStatus());
+    };
+
+    updateStatus();
+
+    const interval = window.setInterval(updateStatus, 60 * 1000);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  const todayMission =
+    missions.find((m) => !doneMissions.includes(m.id)) ?? missions[0]!;
+
+  const openSpaces = chaonStatus.isOpen
+    ? spaces.filter((s) => s.open)
+    : [];
 
   return (
     <AppShell>
@@ -43,43 +119,70 @@ function Home() {
 
       <section className="rise relative pt-6">
         <span className="float-slow absolute right-2 top-4 text-4xl">🛼</span>
+
         <p className="text-[11px] font-bold tracking-[0.24em] text-muted-foreground">
           대야동 차오름 · 주민센터 2층
         </p>
+
         <h1 className="mt-2 font-display text-[3.2rem] leading-[0.98] tracking-tight">
           오늘 뭐
           <br />
           <span className="text-grad">하지?</span>
         </h1>
+
         <p className="mt-2.5 text-sm text-muted-foreground">
-          {nickname ? `${nickname}아, ` : ""}차오름에서 오늘을 더 재밌게 🎈
+          {nickname ? `${nickname}아, ` : ""}
+          차오름에서 오늘을 더 재밌게 🎈
         </p>
       </section>
 
       <section className="rise mt-5 rounded-3xl bg-night p-4 text-navy-foreground shadow-card ring-1 ring-white/10">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <span className="flex items-center gap-2">
-            <span className="relative flex size-2.5">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-lime opacity-70" />
-              <span className="relative inline-flex size-2.5 rounded-full bg-lime" />
+            <span className="relative flex size-2.5 shrink-0">
+              {chaonStatus.isOpen && (
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-lime opacity-70" />
+              )}
+
+              <span
+                className={`relative inline-flex size-2.5 rounded-full ${
+                  chaonStatus.isOpen ? "bg-lime" : "bg-red-400"
+                }`}
+              />
             </span>
-            <span className="font-display text-base">차오름 OPEN</span>
+
+            <span className="font-display text-base">
+              {chaonStatus.label}
+            </span>
           </span>
-          <span className="text-xs font-bold text-navy-foreground/60">21:30 마감</span>
+
+          <span className="text-right text-xs font-bold text-navy-foreground/60">
+            {chaonStatus.hours}
+          </span>
         </div>
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          {openSpaces.map((s) => (
-            <Link
-              key={s.id}
-              to="/spaces"
-              hash={s.id}
-              className="tap flex items-center justify-between rounded-xl bg-white/10 px-3 py-2.5 text-xs font-bold"
-            >
-              {s.name}
-              <span className="size-1.5 rounded-full bg-lime" />
-            </Link>
-          ))}
-        </div>
+
+        {chaonStatus.isOpen ? (
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            {openSpaces.map((s) => (
+              <Link
+                key={s.id}
+                to="/spaces"
+                hash={s.id}
+                className="tap flex items-center justify-between rounded-xl bg-white/10 px-3 py-2.5 text-xs font-bold"
+              >
+                {s.name}
+                <span className="size-1.5 rounded-full bg-lime" />
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-3 rounded-xl bg-white/10 px-3 py-3 text-center text-xs font-bold text-navy-foreground/70">
+            {chaonStatus.hours === "오늘은 쉬는 날"
+              ? "오늘은 차오름이 쉬는 날이에요 💤"
+              : "지금은 운영시간이 아니에요. 다음 운영시간에 만나요! 👋"}
+          </div>
+        )}
+
         <div className="mt-3">
           <ShareCTA />
         </div>
@@ -88,10 +191,12 @@ function Home() {
       <section className="mt-7">
         <div className="mb-3 flex items-end justify-between">
           <h2 className="font-display text-xl">오늘의 추천</h2>
+
           <Link to="/programs" className="text-xs font-bold text-primary">
             프로그램 보기 →
           </Link>
         </div>
+
         <div className="space-y-3">
           {recommendations.map((r) => (
             <Link
@@ -103,10 +208,17 @@ function Home() {
               <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-white/25 text-3xl">
                 {r.emoji}
               </span>
+
               <span className="min-w-0 flex-1">
-                <span className="block font-display text-lg leading-tight">{r.title}</span>
-                <span className="block text-xs opacity-75">{r.sub}</span>
+                <span className="block font-display text-lg leading-tight">
+                  {r.title}
+                </span>
+
+                <span className="block text-xs opacity-75">
+                  {r.sub}
+                </span>
               </span>
+
               <span className="shrink-0 text-lg">→</span>
             </Link>
           ))}
@@ -118,24 +230,38 @@ function Home() {
           <span className="text-[11px] font-bold tracking-[0.22em] text-lime">
             오늘의 차온 미션
           </span>
-          <span className="font-display text-sm text-lime">+{todayMission.point} POINT</span>
+
+          <span className="font-display text-sm text-lime">
+            +{todayMission.point} POINT
+          </span>
         </div>
+
         <p className="mt-2 font-display text-xl leading-snug">
           {todayMission.emoji} {todayMission.title}
         </p>
-        <p className="mt-1 text-xs text-navy-foreground/60">{todayMission.hint}</p>
+
+        <p className="mt-1 text-xs text-navy-foreground/60">
+          {todayMission.hint}
+        </p>
+
         <div className="mt-4 flex gap-2">
           <button
             type="button"
             disabled={doneMissions.includes(todayMission.id)}
             onClick={() => {
               const res = completeMission(todayMission.id);
-              if (res) setCelebrate(res);
+
+              if (res) {
+                setCelebrate(res);
+              }
             }}
             className="tap flex-1 rounded-2xl bg-lime py-3.5 font-display text-base text-lime-foreground disabled:opacity-50"
           >
-            {doneMissions.includes(todayMission.id) ? "완료했어!" : "완료하기"}
+            {doneMissions.includes(todayMission.id)
+              ? "완료했어!"
+              : "완료하기"}
           </button>
+
           <Link
             to="/missions"
             className="tap grid place-items-center rounded-2xl bg-white/10 px-4 text-xs font-bold"
@@ -153,9 +279,11 @@ function Home() {
           <p className="text-[11px] font-bold tracking-[0.22em] text-lime-foreground/70">
             {yearEnd.title}
           </p>
+
           <p className="mt-1.5 font-display text-2xl leading-tight text-lime-foreground">
             {yearEnd.slogan}
           </p>
+
           <div className="mt-3 flex flex-wrap gap-2">
             {yearEnd.items.map((i) => (
               <span
@@ -166,20 +294,33 @@ function Home() {
               </span>
             ))}
           </div>
-          <p className="mt-4 font-display text-sm text-lime-foreground">연말 이벤트 보러가기 →</p>
+
+          <p className="mt-4 font-display text-sm text-lime-foreground">
+            연말 이벤트 보러가기 →
+          </p>
         </Link>
       </section>
 
       <section className="mt-7">
         <div className="mb-3 flex items-end justify-between">
           <h2 className="font-display text-xl">지금 다들 뭐 해?</h2>
+
           <Link to="/community" className="text-xs font-bold text-primary">
             커뮤니티 →
           </Link>
         </div>
-        <Link to="/community" className="tap block rounded-3xl bg-card p-4 shadow-card">
-          <p className="text-sm">🎲 “오늘 친구들이랑 보드게임함, 마지막에 역전당해서 개억울”</p>
-          <p className="mt-2 text-xs text-muted-foreground">달려라감자 · 12분 전 · ♥ 24</p>
+
+        <Link
+          to="/community"
+          className="tap block rounded-3xl bg-card p-4 shadow-card"
+        >
+          <p className="text-sm">
+            🎲 “오늘 친구들이랑 보드게임함, 마지막에 역전당해서 개억울”
+          </p>
+
+          <p className="mt-2 text-xs text-muted-foreground">
+            달려라감자 · 12분 전 · ♥ 24
+          </p>
         </Link>
       </section>
     </AppShell>
