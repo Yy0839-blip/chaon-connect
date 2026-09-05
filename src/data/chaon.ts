@@ -211,7 +211,14 @@ export const missions: Mission[] = [
     badge: "독서왕",
     daily: true,
   },
-  { id: "m5", title: "차오름에서 사진 찍기", hint: "커뮤니티에 올려도 좋아", point: 5, emoji: "📸", daily: true },
+  {
+    id: "m5",
+    title: "차오름에서 사진 찍기",
+    hint: "커뮤니티에 올려도 좋아",
+    point: 5,
+    emoji: "📸",
+    daily: true,
+  },
   {
     id: "m6",
     title: "차오름 첫 방문하기",
@@ -230,7 +237,14 @@ export const missions: Mission[] = [
     badge: "이벤트 참가자",
     daily: false,
   },
-  { id: "m8", title: "새로운 친구와 인사하기", hint: "용기 내기 +1", point: 10, emoji: "👋", daily: false },
+  {
+    id: "m8",
+    title: "새로운 친구와 인사하기",
+    hint: "용기 내기 +1",
+    point: 10,
+    emoji: "👋",
+    daily: false,
+  },
 ];
 
 export const allBadges = [
@@ -303,9 +317,27 @@ export const yearEnd = {
   slogan: "우리들의 연말을 만들어보자.",
   period: "2026.12.05 ~ 12.20",
   items: [
-    { id: "contest", name: "공모전", emoji: "🏆", to: "/events/contest", desc: "우리 동네를 우리가 만든다" },
-    { id: "market", name: "플리마켓", emoji: "🛍️", to: "/events/market", desc: "내 물건으로 부스 열기" },
-    { id: "party", name: "연말파티", emoji: "🎊", to: "/events/party", desc: "1년 활동 다 모아서 한 판" },
+    {
+      id: "contest",
+      name: "공모전",
+      emoji: "🏆",
+      to: "/events/contest",
+      desc: "우리 동네를 우리가 만든다",
+    },
+    {
+      id: "market",
+      name: "플리마켓",
+      emoji: "🛍️",
+      to: "/events/market",
+      desc: "내 물건으로 부스 열기",
+    },
+    {
+      id: "party",
+      name: "연말파티",
+      emoji: "🎊",
+      to: "/events/party",
+      desc: "1년 활동 다 모아서 한 판",
+    },
   ],
 };
 
@@ -316,4 +348,82 @@ export const contestCategories = [
   { id: "design", name: "디자인", emoji: "✏️" },
   { id: "dance", name: "댄스", emoji: "🕺" },
   { id: "idea", name: "아이디어", emoji: "💡" },
+];
+
+export type EventDetail = {
+  id: string;
+  name: string;
+  emoji: string;
+  headline: string;
+  desc: string;
+  when: string;
+  where: string;
+  point: number;
+  facts: string[];
+  steps: string[];
+  tone: "lime" | "sky" | "navy";
+};
+
+export const eventDetails: Record<"contest" | "market" | "party", EventDetail> = {
+  contest: {
+    id: "contest",
+    name: "공모전",
+    emoji: "🏆",
+    headline: "우리 동네를 우리가 만든다",
+    desc: "영상, 사진, 그림, 디자인, 댄스, 아이디어 중 하나만 골라 제출하면 끝. 수상작은 연말파티에서 공개돼.",
+    when: "2026.12.05 ~ 12.14 접수",
+    where: "차오름 2층 접수대 또는 현장 제출",
+    point: 30,
+    facts: ["혼자도, 팀도 가능", "참가비 없음", "수상팀 문화상품권 지급"],
+    steps: [
+      "참여 신청하기",
+      "카테고리 정하고 작품 만들기",
+      "12월 14일까지 차오름에 제출",
+      "12월 20일 연말파티에서 발표",
+    ],
+    tone: "lime",
+  },
+  market: {
+    id: "market",
+    name: "플리마켓",
+    emoji: "🛍️",
+    headline: "내 물건으로 부스 열기",
+    desc: "안 쓰는 물건, 직접 만든 굿즈 뭐든 OK. 부스 신청은 두 명부터, 자리는 차오름 1층에 깔려.",
+    when: "2026.12.13 (일) 13:00 - 17:00",
+    where: "대야동 주민센터 1층 로비",
+    point: 20,
+    facts: ["부스 20팀 선착순", "참가비 없음", "돗자리·테이블 대여 가능"],
+    steps: [
+      "참여 신청하기",
+      "친구랑 팀 만들기 (2명 이상)",
+      "팔 물건 정리해서 오기",
+      "13일 12시 30분까지 현장 도착",
+    ],
+    tone: "sky",
+  },
+  party: {
+    id: "party",
+    name: "연말파티",
+    emoji: "🎊",
+    headline: "1년 활동 다 모아서 한 판",
+    desc: "댄스 무대, 공모전 시상, 올해의 차오름러 발표까지. 포인트 많이 모은 사람은 앞자리 확정!",
+    when: "2026.12.20 (일) 17:00 - 20:00",
+    where: "대야동 주민센터 2층 차오름",
+    point: 25,
+    facts: ["무대 신청 12월 15일 마감", "간식·음료 제공", "친구 동반 가능"],
+    steps: [
+      "참여 신청하기",
+      "무대에 설 사람은 팀 등록",
+      "12월 20일 17시 차오름 도착",
+      "끝나고 단체사진 필수 📸",
+    ],
+    tone: "navy",
+  },
+};
+
+export const adminStats = [
+  { id: "visit", label: "이번 주 방문", value: "312명", delta: "+18%" },
+  { id: "apply", label: "프로그램 신청", value: "87건", delta: "+9%" },
+  { id: "post", label: "커뮤니티 글", value: "146개", delta: "+24%" },
+  { id: "report", label: "신고 대기", value: "2건", delta: "확인 필요" },
 ];

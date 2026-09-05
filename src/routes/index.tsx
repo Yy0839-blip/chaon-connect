@@ -12,10 +12,14 @@ export const Route = createFileRoute("/")({
       { title: "차온 CHAON — 오늘 뭐 하지?" },
       {
         name: "description",
-        content: "시흥시 대야동 청소년 공간 차오름에서 오늘 할 수 있는 것. 추천 활동, 미션, 프로그램을 한 번에.",
+        content:
+          "시흥시 대야동 청소년 공간 차오름에서 오늘 할 수 있는 것. 추천 활동, 미션, 프로그램을 한 번에.",
       },
       { property: "og:title", content: "차온 CHAON — 오늘 뭐 하지?" },
-      { property: "og:description", content: "차오름에서, 오늘을 더 재밌게. 청소년 공유공간 차오름 앱." },
+      {
+        property: "og:description",
+        content: "차오름에서, 오늘을 더 재밌게. 청소년 공유공간 차오름 앱.",
+      },
     ],
   }),
   component: Home,
@@ -111,7 +115,9 @@ function Home() {
 
       <section className="mt-7 rounded-3xl bg-night p-5 text-navy-foreground shadow-card">
         <div className="flex items-center justify-between">
-          <span className="text-[11px] font-bold tracking-[0.22em] text-lime">오늘의 차온 미션</span>
+          <span className="text-[11px] font-bold tracking-[0.22em] text-lime">
+            오늘의 차온 미션
+          </span>
           <span className="font-display text-sm text-lime">+{todayMission.point} POINT</span>
         </div>
         <p className="mt-2 font-display text-xl leading-snug">
@@ -140,9 +146,16 @@ function Home() {
       </section>
 
       <section className="mt-7">
-        <Link to="/events" className="tap shine block rounded-3xl bg-limeGrad p-5 shadow-card glow-lime">
-          <p className="text-[11px] font-bold tracking-[0.22em] text-lime-foreground/70">{yearEnd.title}</p>
-          <p className="mt-1.5 font-display text-2xl leading-tight text-lime-foreground">{yearEnd.slogan}</p>
+        <Link
+          to="/events"
+          className="tap shine block rounded-3xl bg-limeGrad p-5 shadow-card glow-lime"
+        >
+          <p className="text-[11px] font-bold tracking-[0.22em] text-lime-foreground/70">
+            {yearEnd.title}
+          </p>
+          <p className="mt-1.5 font-display text-2xl leading-tight text-lime-foreground">
+            {yearEnd.slogan}
+          </p>
           <div className="mt-3 flex flex-wrap gap-2">
             {yearEnd.items.map((i) => (
               <span

@@ -1,4 +1,12 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import { missions, seedPosts, type Post } from "@/data/chaon";
 
 type State = {
@@ -74,7 +82,10 @@ export function ChaonProvider({ children }: { children: ReactNode }) {
         ...s,
         doneMissions: [...s.doneMissions, id],
         points: s.points + mission.point,
-        badges: mission.badge && !s.badges.includes(mission.badge) ? [...s.badges, mission.badge] : s.badges,
+        badges:
+          mission.badge && !s.badges.includes(mission.badge)
+            ? [...s.badges, mission.badge]
+            : s.badges,
       };
     });
     return applied ? { point: mission.point, badge: mission.badge } : null;
@@ -86,7 +97,9 @@ export function ChaonProvider({ children }: { children: ReactNode }) {
       joined = !s.joinedPrograms.includes(id);
       return {
         ...s,
-        joinedPrograms: joined ? [...s.joinedPrograms, id] : s.joinedPrograms.filter((p) => p !== id),
+        joinedPrograms: joined
+          ? [...s.joinedPrograms, id]
+          : s.joinedPrograms.filter((p) => p !== id),
       };
     });
     return joined;

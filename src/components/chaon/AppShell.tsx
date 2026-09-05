@@ -26,7 +26,9 @@ export function AppShell({ children }: { children: ReactNode }) {
               </span>
               <span className="leading-none">
                 <span className="text-grad block font-display text-lg tracking-tight">차온</span>
-                <span className="block text-[9px] font-bold tracking-[0.28em] text-muted-foreground">CHAON</span>
+                <span className="block text-[9px] font-bold tracking-[0.28em] text-muted-foreground">
+                  CHAON
+                </span>
               </span>
             </Link>
             <div className="flex items-center gap-2">
@@ -87,7 +89,15 @@ export function AppShell({ children }: { children: ReactNode }) {
   );
 }
 
-export function PageTitle({ kicker, title, sub }: { kicker?: string; title: string; sub?: string }) {
+export function PageTitle({
+  kicker,
+  title,
+  sub,
+}: {
+  kicker?: string;
+  title: string;
+  sub?: string;
+}) {
   return (
     <div className="rise pt-5">
       {kicker ? (

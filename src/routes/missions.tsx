@@ -11,7 +11,8 @@ export const Route = createFileRoute("/missions")({
       { title: "차온 미션 · 포인트 모으기 | 차온 CHAON" },
       {
         name: "description",
-        content: "차오름에서 미션을 완료하고 차온 포인트와 배지를 모아요. 오늘의 미션과 도전 미션을 확인하세요.",
+        content:
+          "차오름에서 미션을 완료하고 차온 포인트와 배지를 모아요. 오늘의 미션과 도전 미션을 확인하세요.",
       },
       { property: "og:title", content: "차온 미션 · 포인트 모으기" },
       { property: "og:description", content: "미션 완료하고 포인트와 배지 모으기." },
@@ -32,11 +33,15 @@ function Missions() {
         const done = doneMissions.includes(m.id);
         return (
           <div key={m.id} className="flex items-center gap-3 rounded-3xl bg-card p-4 shadow-card">
-            <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-muted text-2xl">{m.emoji}</span>
+            <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-muted text-2xl">
+              {m.emoji}
+            </span>
             <span className="min-w-0 flex-1">
               <span className="block font-display text-base leading-tight">{m.title}</span>
               <span className="block text-xs text-muted-foreground">{m.hint}</span>
-              <span className="mt-1 inline-block text-[11px] font-bold text-primary">+{m.point} POINT</span>
+              <span className="mt-1 inline-block text-[11px] font-bold text-primary">
+                +{m.point} POINT
+              </span>
             </span>
             <button
               type="button"
@@ -58,7 +63,11 @@ function Missions() {
   return (
     <AppShell>
       <Celebrate data={celebrate} onClose={() => setCelebrate(null)} />
-      <PageTitle kicker="CHAON MISSION" title="미션 깨고 포인트 모으기" sub="차오름에서 하나씩 도전해봐" />
+      <PageTitle
+        kicker="CHAON MISSION"
+        title="미션 깨고 포인트 모으기"
+        sub="차오름에서 하나씩 도전해봐"
+      />
 
       <div className="rise mt-5 flex items-center justify-between rounded-3xl bg-night p-5 text-navy-foreground shadow-card">
         <span>

@@ -10,7 +10,8 @@ export const Route = createFileRoute("/programs")({
       { title: "프로그램 신청 · 차오름 활동 | 차온 CHAON" },
       {
         name: "description",
-        content: "댄스 챌린지, 보드게임 데이, 금요 영화 상영회까지. 차오름 프로그램을 확인하고 바로 신청해요.",
+        content:
+          "댄스 챌린지, 보드게임 데이, 금요 영화 상영회까지. 차오름 프로그램을 확인하고 바로 신청해요.",
       },
       { property: "og:title", content: "프로그램 신청 · 차오름 활동" },
       { property: "og:description", content: "차오름에서 열리는 프로그램 신청하기." },
@@ -30,7 +31,11 @@ function Programs() {
 
   return (
     <AppShell>
-      <PageTitle kicker="CHAON PROGRAMS" title="같이 할 사람?" sub="신청하면 친구랑 같이 참여할 수 있어" />
+      <PageTitle
+        kicker="CHAON PROGRAMS"
+        title="같이 할 사람?"
+        sub="신청하면 친구랑 같이 참여할 수 있어"
+      />
 
       <div className="mt-5 space-y-3">
         {programs.map((p) => {
@@ -49,7 +54,9 @@ function Programs() {
                     {p.date} · {p.time} · {p.target}
                   </span>
                 </span>
-                <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold ${statusClass[p.status]}`}>
+                <span
+                  className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold ${statusClass[p.status]}`}
+                >
                   {p.status}
                 </span>
               </div>
@@ -65,7 +72,9 @@ function Programs() {
                 disabled={closed && !joined}
                 onClick={() => {
                   const isJoined = toggleProgram(p.id);
-                  toast[isJoined ? "success" : "info"](isJoined ? "신청 완료! 그날 보자 🎉" : "신청을 취소했어");
+                  toast[isJoined ? "success" : "info"](
+                    isJoined ? "신청 완료! 그날 보자 🎉" : "신청을 취소했어",
+                  );
                 }}
                 className={`tap mt-3 w-full rounded-2xl py-3.5 font-display text-base disabled:opacity-40 ${
                   joined ? "bg-muted text-foreground" : "bg-sunrise text-primary-foreground"
