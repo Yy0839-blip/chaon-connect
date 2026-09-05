@@ -22,6 +22,14 @@ export type Meetup = {
   avatar: string;
 };
 
+export type MusicRecommendation = {
+  id: string;
+  title: string;
+  artist: string;
+  date: string;
+  recommender: string;
+};
+
 type State = {
   nickname: string;
   avatar: string;
@@ -33,9 +41,11 @@ type State = {
   visits: number;
   posts: Post[];
   meetups: Meetup[];
+  musicVotes: Record<string, string>;
+  musicRecommendations: MusicRecommendation[];
 };
 
-const KEY = "chaon.state.v2";
+const KEY = "chaon.state.v3";
 
 const initial: State = {
   nickname: "",
@@ -48,6 +58,8 @@ const initial: State = {
   visits: 4,
   posts: seedPosts,
   meetups: [],
+  musicVotes: {},
+  musicRecommendations: [],
 };
 
 type Ctx = State & {
@@ -60,6 +72,8 @@ type Ctx = State & {
   toggleLike: (id: string) => void;
   addMeetup: (input: Omit<Meetup, "id" | "creator" | "avatar" | "joinedPeople">) => void;
   toggleMeetup: (id: string) => boolean;
+  voteMusic: (date: string, songId: string) => boolean;
+  addMusicRecommendation: (title: string, artist: string, date: string) => void;
 };
 
 const ChaonContext = createContext<Ctx | null>(null);
@@ -96,84 +110,52 @@ export function ChaonProvider({ children }: { children: ReactNode }) {
     setState((s) => {
       if (s.doneMissions.includes(id)) return s;
       applied = true;
-      return {
-        ...s,
-        doneMissions: [...s.doneMissions, id],
-        points: s.points + mission.point,
-        badges: mission.badge && !s.badges.includes(mission.badge) ? [...s.badges, mission.badge] : s.badges,
-      };
+      return { ...s, doneMissions: [...s.doneMissions, id], points: s.points + mission.point, badges: mission.badge && !s.badges.includes(mission.badge) ? [...s.badges, mission.badge] : s.badges };
     });
     return applied ? { point: mission.point, badge: mission.badge } : null;
   }, []);
 
   const toggleProgram = useCallback((id: string) => {
     let joined = false;
-    setState((s) => {
-      joined = !s.joinedPrograms.includes(id);
-      return { ...s, joinedPrograms: joined ? [...s.joinedPrograms, id] : s.joinedPrograms.filter((p) => p !== id) };
-    });
+    setState((s) => { joined = !s.joinedPrograms.includes(id); return { ...s, joinedPrograms: joined ? [...s.joinedPrograms, id] : s.joinedPrograms.filter((p) => p !== id) }; });
     return joined;
   }, []);
 
   const toggleEvent = useCallback((id: string) => {
     let joined = false;
-    setState((s) => {
-      joined = !s.joinedEvents.includes(id);
-      return { ...s, joinedEvents: joined ? [...s.joinedEvents, id] : s.joinedEvents.filter((e) => e !== id) };
-    });
+    setState((s) => { joined = !s.joinedEvents.includes(id); return { ...s, joinedEvents: joined ? [...s.joinedEvents, id] : s.joinedEvents.filter((e) => e !== id) }; });
     return joined;
   }, []);
 
   const addPost = useCallback((text: string, place: string, image?: string) => {
-    setState((s) => ({
-      ...s,
-      points: s.points + 5,
-      posts: [
-        {
-          id: `u${Date.now()}`,
-          nickname: s.nickname || "익명의 차오름러",
-          avatar: s.avatar,
-          place,
-          time: "방금",
-          text,
-          likes: 0,
-          comments: 0,
-          ...(image ? { image } : {}),
-        },
-        ...s.posts,
-      ],
-    }));
+    setState((s) => ({ ...s, points: s.points + 5, posts: [{ id: `u${Date.now()}`, nickname: s.nickname || "익명의 차오름러", avatar: s.avatar, place, time: "방금", text, likes: 0, comments: 0, ...(image ? { image } : {}) }, ...s.posts] }));
   }, []);
 
-  const toggleLike = useCallback((id: string) => {
-    setState((s) => ({
-      ...s,
-      posts: s.posts.map((p) => p.id === id ? { ...p, liked: !p.liked, likes: p.likes + (p.liked ? -1 : 1) } : p),
-    }));
-  }, []);
+  const toggleLike = useCallback((id: string) => setState((s) => ({ ...s, posts: s.posts.map((p) => p.id === id ? { ...p, liked: !p.liked, likes: p.likes + (p.liked ? -1 : 1) } : p) })), []);
 
-  const addMeetup = useCallback((input: Omit<Meetup, "id" | "creator" | "avatar" | "joinedPeople">) => {
-    setState((s) => ({
-      ...s,
-      meetups: [{ ...input, id: `meetup-${Date.now()}`, creator: s.nickname || "익명의 차오름러", avatar: s.avatar, joinedPeople: 1 }, ...s.meetups],
-    }));
-  }, []);
+  const addMeetup = useCallback((input: Omit<Meetup, "id" | "creator" | "avatar" | "joinedPeople">) => setState((s) => ({ ...s, meetups: [{ ...input, id: `meetup-${Date.now()}`, creator: s.nickname || "익명의 차오름러", avatar: s.avatar, joinedPeople: 1 }, ...s.meetups] })), []);
 
   const toggleMeetup = useCallback((id: string) => {
     let joined = false;
-    setState((s) => ({
-      ...s,
-      meetups: s.meetups.map((m) => {
-        if (m.id !== id || m.joinedPeople >= m.maxPeople) return m;
-        joined = true;
-        return { ...m, joinedPeople: m.joinedPeople + 1 };
-      }),
-    }));
+    setState((s) => ({ ...s, meetups: s.meetups.map((m) => { if (m.id !== id || m.joinedPeople >= m.maxPeople) return m; joined = true; return { ...m, joinedPeople: m.joinedPeople + 1 }; }) }));
     return joined;
   }, []);
 
-  const value = useMemo<Ctx>(() => ({ ...state, ready, setProfile, completeMission, toggleProgram, toggleEvent, addPost, toggleLike, addMeetup, toggleMeetup }), [state, ready, setProfile, completeMission, toggleProgram, toggleEvent, addPost, toggleLike, addMeetup, toggleMeetup]);
+  const voteMusic = useCallback((date: string, songId: string) => {
+    let voted = false;
+    setState((s) => {
+      if (s.musicVotes[date]) return s;
+      voted = true;
+      return { ...s, musicVotes: { ...s.musicVotes, [date]: songId }, points: s.points + 1 };
+    });
+    return voted;
+  }, []);
 
+  const addMusicRecommendation = useCallback((title: string, artist: string, date: string) => {
+    setState((s) => ({ ...s, musicRecommendations: [{ id: `song-${Date.now()}`, title, artist, date, recommender: s.nickname || "익명의 차오름러" }, ...s.musicRecommendations].slice(0, 30) }));
+  }, []);
+
+  const value = useMemo<Ctx>(() => ({ ...state, ready, setProfile, completeMission, toggleProgram, toggleEvent, addPost, toggleLike, addMeetup, toggleMeetup, voteMusic, addMusicRecommendation }), [state, ready, setProfile, completeMission, toggleProgram, toggleEvent, addPost, toggleLike, addMeetup, toggleMeetup, voteMusic, addMusicRecommendation]);
   return <ChaonContext.Provider value={value}>{children}</ChaonContext.Provider>;
 }
 
