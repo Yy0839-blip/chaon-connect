@@ -27,32 +27,37 @@ const tone = {
 function Spaces() {
   return (
     <AppShell>
-      <PageTitle kicker="CHAON PLAY" title="오늘 뭐 하고 놀까?" sub="카드를 누르면 실제 참고 사진·관련 정보·이용 팁까지 바로 볼 수 있어요." />
+      <PageTitle kicker="CHAON PLAY" title="오늘 뭐 하고 놀까?" sub="궁금한 카드를 골라 사진과 이용 방법을 확인해요." />
       <div className="mt-5 space-y-4">
         {spaces.map((s) => {
           const detail = spaceDetails[s.id];
           return (
-            <Link key={s.id} to="/spaces/$spaceId" params={{ spaceId: s.id }} className={`tap rise block overflow-hidden rounded-3xl shadow-card ${tone[s.tone]}`}>
+            <article key={s.id} className={`overflow-hidden rounded-3xl shadow-card ${tone[s.tone]}`}>
               {detail ? (
                 <div className="relative aspect-[16/8] overflow-hidden bg-black/10">
                   <img src={detail.photo} alt={detail.photoAlt} className="size-full object-cover" loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/5 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent" />
                   <span className="absolute right-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold text-slate-800">실제 참고 사진</span>
                   <div className="absolute inset-x-4 bottom-3 flex items-end justify-between gap-3 text-white">
                     <div><h2 className="font-display text-2xl leading-tight">{s.name}</h2><p className="mt-0.5 text-xs text-white/80">{s.tagline}</p></div>
-                    <ArrowRight size={18} />
+                    <Link to="/spaces/$spaceId" params={{ spaceId: s.id }} className="tap grid size-11 shrink-0 place-items-center rounded-full bg-white text-slate-900 shadow-lg" aria-label={`${s.name} 자세히 보기`}>
+                      <ArrowRight size={19} />
+                    </Link>
                   </div>
                 </div>
               ) : null}
               <div className="p-4">
                 <div className="flex items-center justify-between gap-3">
                   <span className="rounded-full bg-white/20 px-2.5 py-1 text-[11px] font-bold">{s.open ? "지금 이용 가능" : "이용 불가"}</span>
-                  <span className="inline-flex items-center gap-1 text-[10px] font-bold opacity-75"><ExternalLink size={12} /> 관련 정보 보기</span>
+                  {detail ? <a href={detail.sourceUrl} target="_blank" rel="noreferrer" className="tap inline-flex min-h-10 items-center gap-1.5 rounded-xl bg-white/15 px-3 text-[11px] font-bold" aria-label={`${s.name} 관련 정보 보기`}><ExternalLink size={13} /> 관련 정보</a> : null}
                 </div>
                 <ul className="mt-3 flex flex-wrap gap-2">{s.can.map((c) => <li key={c} className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold">{c}</li>)}</ul>
-                <div className="mt-4 flex items-center justify-between text-xs font-bold"><span className="inline-flex items-center gap-1.5"><CalendarPlus size={14} /> 같이 할 약속 만들기</span><span>자세히 →</span></div>
+                <div className="mt-4 grid grid-cols-[1fr_auto] gap-2">
+                  <Link to="/spaces/$spaceId" params={{ spaceId: s.id }} className="tap flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-white font-display text-sm text-slate-900">자세히 보기 <ArrowRight size={15} /></Link>
+                  <Link to="/community" className="tap grid min-h-11 min-w-12 place-items-center rounded-2xl bg-white/15" aria-label={`${s.name}으로 약속 만들기`}><CalendarPlus size={17} /></Link>
+                </div>
               </div>
-            </Link>
+            </article>
           );
         })}
       </div>
