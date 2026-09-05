@@ -1,15 +1,22 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { Flame } from "lucide-react";
+import {
+  Flame,
+  Gamepad2,
+  House,
+  CircleCheckBig,
+  UsersRound,
+  UserRound,
+} from "lucide-react";
 import { useChaon } from "@/lib/chaon-store";
 import { cn } from "@/lib/utils";
 
 const tabs = [
-  { to: "/", label: "홈", icon: "⌂", exact: true },
-  { to: "/spaces", label: "놀거리", icon: "✦", exact: false },
-  { to: "/missions", label: "미션", icon: "★", exact: false },
-  { to: "/community", label: "친구들", icon: "☻", exact: false },
-  { to: "/profile", label: "나", icon: "●", exact: false },
+  { to: "/", label: "홈", icon: House, exact: true },
+  { to: "/spaces", label: "놀거리", icon: Gamepad2, exact: false },
+  { to: "/missions", label: "미션", icon: CircleCheckBig, exact: false },
+  { to: "/community", label: "친구들", icon: UsersRound, exact: false },
+  { to: "/profile", label: "나", icon: UserRound, exact: false },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -53,38 +60,47 @@ export function AppShell({ children }: { children: ReactNode }) {
         <nav className="fixed inset-x-0 bottom-0 z-40" aria-label="주요 메뉴">
           <div className="mx-auto w-full max-w-[430px] px-5 pb-[max(12px,env(safe-area-inset-bottom))]">
             <div className="glass grid grid-cols-5 rounded-[28px] p-1.5">
-              {tabs.map((t) => (
-                <Link
-                  key={t.to}
-                  to={t.to}
-                  activeOptions={{ exact: t.exact }}
-                  className="tap group flex min-w-0 flex-col items-center gap-0.5 rounded-[20px] py-1.5"
-                >
-                  {({ isActive }) => (
-                    <>
-                      <span
-                        className={cn(
-                          "grid size-8 place-items-center rounded-[14px] text-[19px] font-black transition-all duration-200",
-                          isActive
-                            ? "bg-sunrise scale-105 text-primary-foreground shadow-pop"
-                            : "text-muted-foreground group-hover:bg-white/50",
-                        )}
-                        aria-hidden="true"
-                      >
-                        {t.icon}
-                      </span>
-                      <span
-                        className={cn(
-                          "truncate text-[10px] font-bold",
-                          isActive ? "text-foreground" : "text-muted-foreground",
-                        )}
-                      >
-                        {t.label}
-                      </span>
-                    </>
-                  )}
-                </Link>
-              ))}
+              {tabs.map((t) => {
+                const Icon = t.icon;
+
+                return (
+                  <Link
+                    key={t.to}
+                    to={t.to}
+                    activeOptions={{ exact: t.exact }}
+                    className="tap group flex min-w-0 flex-col items-center gap-0.5 rounded-[20px] py-1.5"
+                  >
+                    {({ isActive }) => (
+                      <>
+                        <span
+                          className={cn(
+                            "grid size-8 place-items-center rounded-[14px] transition-all duration-200",
+                            isActive
+                              ? "bg-primary text-primary-foreground shadow-pop"
+                              : "text-muted-foreground group-hover:bg-white/50",
+                          )}
+                          aria-hidden="true"
+                        >
+                          <Icon
+                            className={cn(
+                              "size-[19px] stroke-[2.25] transition-transform duration-200",
+                              isActive && "scale-105",
+                            )}
+                          />
+                        </span>
+                        <span
+                          className={cn(
+                            "truncate text-[10px] font-bold",
+                            isActive ? "text-foreground" : "text-muted-foreground",
+                          )}
+                        >
+                          {t.label}
+                        </span>
+                      </>
+                    )}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </nav>
