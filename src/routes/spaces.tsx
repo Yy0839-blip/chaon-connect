@@ -13,10 +13,10 @@ export const Route = createFileRoute("/spaces")({
 });
 
 const photoBySpace: Record<string, { position: string; alt: string }> = {
-  dance: { position: "0% 0%", alt: "차오름 실제 다목적 공간 사진" },
-  beam: { position: "100% 0%", alt: "차오름 실제 다목적 공간 사진" },
-  board: { position: "0% 100%", alt: "차오름 실제 보드게임 공간 사진" },
-  loft: { position: "100% 100%", alt: "차오름 실제 복층 독서 공간 사진" },
+  dance: { position: "0% 0%", alt: "차오름 실제 복층 공간 사진" },
+  beam: { position: "100% 0%", alt: "차오름 실제 창가 공간 사진" },
+  board: { position: "100% 100%", alt: "차오름 실제 보드게임 사진" },
+  loft: { position: "0% 100%", alt: "차오름 실제 다목적 공간 사진" },
 };
 
 const tone = {
@@ -40,16 +40,20 @@ function Spaces() {
         const photo = photoBySpace[s.id];
         return <div key={s.id}>
           <div className={`overflow-hidden rounded-3xl shadow-card ${tone[s.tone]}`}>
-            {photo && <div
-              role="img"
-              aria-label={photo.alt}
-              className="h-44 w-full bg-cover bg-no-repeat"
-              style={{
-                backgroundImage: "url('/images/chaon-spaces.jpg')",
-                backgroundSize: "200% 200%",
-                backgroundPosition: photo.position,
-              }}
-            />}
+            {photo && <div className="relative h-44 w-full overflow-hidden bg-muted">
+              <img
+                src="/images/chaon-spaces.jpg"
+                alt={photo.alt}
+                className="absolute max-w-none"
+                style={{
+                  width: "200%",
+                  height: "200%",
+                  objectFit: "cover",
+                  left: s.id === "beam" || s.id === "loft" ? "-100%" : "0",
+                  top: s.id === "loft" || s.id === "board" ? "-100%" : "0",
+                }}
+              />
+            </div>}
             <div className="p-5">
               <div className="flex items-start justify-between gap-3">
                 <div>
