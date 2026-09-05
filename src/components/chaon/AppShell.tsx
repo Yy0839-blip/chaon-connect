@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { Flame, Gamepad2, House, CircleCheckBig, UsersRound, UserRound } from "lucide-react";
+import { Flame, Gamepad2, House, CircleCheckBig, MessageCircle, UserRound } from "lucide-react";
 import { useChaon } from "@/lib/chaon-store";
 import { cn } from "@/lib/utils";
 
@@ -8,7 +8,7 @@ const tabs = [
   { to: "/", label: "홈", icon: House, exact: true },
   { to: "/spaces", label: "놀거리", icon: Gamepad2, exact: false },
   { to: "/missions", label: "미션", icon: CircleCheckBig, exact: false },
-  { to: "/community", label: "같이 놀기", icon: UsersRound, exact: false },
+  { to: "/community", label: "커뮤니티", icon: MessageCircle, exact: false },
   { to: "/profile", label: "나", icon: UserRound, exact: false },
 ] as const;
 
