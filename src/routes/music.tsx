@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Check, Music2, Plus, Send } from "lucide-react";
+import { Check, Music2, Send } from "lucide-react";
 import { useState } from "react";
 import { AppShell, PageTitle } from "@/components/chaon/AppShell";
 import { dailySongs } from "@/data/music";
@@ -14,12 +14,12 @@ export const Route = createFileRoute("/music")({
 const baseVotes = [8, 6, 5, 7];
 
 function Music() {
-  const { musicVotes, musicRecommendations, voteMusic, addMusicRecommendation } = useChaon();
+  const { musicVotes, musicVoteCounts, musicRecommendations, voteMusic, addMusicRecommendation } = useChaon();
   const [title, setTitle] = useState("");
   const [artist, setArtist] = useState("");
-  const date = new Date().toISOString().slice(0, 10);
+  const date = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" });
   const voted = musicVotes[date];
-  const counts = dailySongs.map((song, index) => baseVotes[index]! + (voted === song.id ? 1 : 0));
+  const counts = dailySongs.map((song, index) => Math.max(baseVotes[index]!, musicVoteCounts[`${date}:${song.id}`] || 0));
   const total = counts.reduce((a, b) => a + b, 0);
   const recommend = () => {
     if (!title.trim() || !artist.trim()) return toast.error("노래 제목과 가수를 적어주세요.");
@@ -48,6 +48,6 @@ function Music() {
       <input value={artist} onChange={(e) => setArtist(e.target.value.slice(0, 40))} placeholder="가수 / 아티스트" className="mt-2 w-full rounded-2xl bg-muted px-4 py-3 text-sm outline-none" />
       <button type="button" onClick={recommend} className="tap mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-secondary py-3 font-display text-sm text-primary"><Send size={15} /> 추천곡 올리기</button>
     </section>
-    <section className="mt-7 pb-3"><div className="mb-3 flex items-end justify-between"><div><p className="text-[10px] font-bold tracking-[0.18em] text-primary">COMMUNITY PICKS</p><h2 className="mt-1 font-display text-xl">친구들이 추천한 노래</h2></div><Plus size={18} className="text-muted-foreground" /></div><div className="space-y-2">{musicRecommendations.length ? musicRecommendations.map((song) => <div key={song.id} className="rounded-2xl bg-card p-4 shadow-card"><p className="font-display text-base">{song.title}</p><p className="text-xs text-muted-foreground">{song.artist} · {song.recommender}</p></div>) : <div className="rounded-2xl bg-secondary p-4 text-xs text-muted-foreground">아직 추천곡이 없어요. 첫 곡을 올려보세요.</div>}</div></section>
+    <section className="mt-7 pb-3"><div className="mb-3"><p className="text-[10px] font-bold tracking-[0.18em] text-primary">COMMUNITY PICKS</p><h2 className="mt-1 font-display text-xl">친구들이 추천한 노래</h2></div><div className="space-y-2">{musicRecommendations.length ? musicRecommendations.map((song) => <div key={song.id} className="rounded-2xl bg-card p-4 shadow-card"><p className="font-display text-base">{song.title}</p><p className="text-xs text-muted-foreground">{song.artist} · {song.recommender}</p></div>) : <div className="rounded-2xl bg-secondary p-4 text-xs text-muted-foreground">아직 추천곡이 없어요. 첫 곡을 올려보세요.</div>}</div></section>
   </AppShell>;
 }
