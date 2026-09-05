@@ -1,5 +1,5 @@
 -- CHAON production-ready shared data schema
--- Run once in the Supabase SQL Editor.
+-- Run once in the Supabase SQL Editor. Safe to run again.
 
 create extension if not exists pgcrypto;
 
@@ -9,9 +9,18 @@ create table if not exists public.profiles (
   avatar text not null default '🐤',
   profile_tags text[] not null default '{}',
   points integer not null default 240,
+  badges text[] not null default '{}',
+  done_missions text[] not null default '{}',
+  joined_programs text[] not null default '{}',
+  joined_events text[] not null default '{}',
   visits integer not null default 0,
   updated_at timestamptz not null default now()
 );
+
+alter table public.profiles add column if not exists badges text[] not null default '{}';
+alter table public.profiles add column if not exists done_missions text[] not null default '{}';
+alter table public.profiles add column if not exists joined_programs text[] not null default '{}';
+alter table public.profiles add column if not exists joined_events text[] not null default '{}';
 
 create table if not exists public.posts (
   id uuid primary key default gen_random_uuid(),
@@ -80,97 +89,45 @@ alter table public.meetup_members enable row level security;
 alter table public.music_votes enable row level security;
 alter table public.music_recommendations enable row level security;
 
--- Idempotent policies: safe to run again.
-do $$ begin
-  create policy "profiles readable" on public.profiles for select to authenticated using (true);
-exception when duplicate_object then null; end $$;
-do $$ begin
-  create policy "profiles own insert" on public.profiles for insert to authenticated with check (auth.uid() = id);
-exception when duplicate_object then null; end $$;
-do $$ begin
-  create policy "profiles own update" on public.profiles for update to authenticated using (auth.uid() = id) with check (auth.uid() = id);
-exception when duplicate_object then null; end $$;
+do $$ begin create policy "profiles readable" on public.profiles for select to authenticated using (true); exception when duplicate_object then null; end $$;
+do $$ begin create policy "profiles own insert" on public.profiles for insert to authenticated with check (auth.uid() = id); exception when duplicate_object then null; end $$;
+do $$ begin create policy "profiles own update" on public.profiles for update to authenticated using (auth.uid() = id) with check (auth.uid() = id); exception when duplicate_object then null; end $$;
 
-do $$ begin
-  create policy "posts readable" on public.posts for select to authenticated using (true);
-exception when duplicate_object then null; end $$;
-do $$ begin
-  create policy "posts own insert" on public.posts for insert to authenticated with check (auth.uid() = author_id);
-exception when duplicate_object then null; end $$;
-do $$ begin
-  create policy "posts own update" on public.posts for update to authenticated using (auth.uid() = author_id);
-exception when duplicate_object then null; end $$;
-do $$ begin
-  create policy "posts own delete" on public.posts for delete to authenticated using (auth.uid() = author_id);
-exception when duplicate_object then null; end $$;
+do $$ begin create policy "posts readable" on public.posts for select to authenticated using (true); exception when duplicate_object then null; end $$;
+do $$ begin create policy "posts own insert" on public.posts for insert to authenticated with check (auth.uid() = author_id); exception when duplicate_object then null; end $$;
+do $$ begin create policy "posts own update" on public.posts for update to authenticated using (auth.uid() = author_id); exception when duplicate_object then null; end $$;
+do $$ begin create policy "posts own delete" on public.posts for delete to authenticated using (auth.uid() = author_id); exception when duplicate_object then null; end $$;
 
-do $$ begin
-  create policy "post likes readable" on public.post_likes for select to authenticated using (true);
-exception when duplicate_object then null; end $$;
-do $$ begin
-  create policy "post likes own insert" on public.post_likes for insert to authenticated with check (auth.uid() = user_id);
-exception when duplicate_object then null; end $$;
-do $$ begin
-  create policy "post likes own delete" on public.post_likes for delete to authenticated using (auth.uid() = user_id);
-exception when duplicate_object then null; end $$;
+do $$ begin create policy "post likes readable" on public.post_likes for select to authenticated using (true); exception when duplicate_object then null; end $$;
+do $$ begin create policy "post likes own insert" on public.post_likes for insert to authenticated with check (auth.uid() = user_id); exception when duplicate_object then null; end $$;
+do $$ begin create policy "post likes own delete" on public.post_likes for delete to authenticated using (auth.uid() = user_id); exception when duplicate_object then null; end $$;
 
-do $$ begin
-  create policy "meetups readable" on public.meetups for select to authenticated using (true);
-exception when duplicate_object then null; end $$;
-do $$ begin
-  create policy "meetups own insert" on public.meetups for insert to authenticated with check (auth.uid() = creator_id);
-exception when duplicate_object then null; end $$;
-do $$ begin
-  create policy "meetups own update" on public.meetups for update to authenticated using (auth.uid() = creator_id);
-exception when duplicate_object then null; end $$;
-do $$ begin
-  create policy "meetups own delete" on public.meetups for delete to authenticated using (auth.uid() = creator_id);
-exception when duplicate_object then null; end $$;
+do $$ begin create policy "meetups readable" on public.meetups for select to authenticated using (true); exception when duplicate_object then null; end $$;
+do $$ begin create policy "meetups own insert" on public.meetups for insert to authenticated with check (auth.uid() = creator_id); exception when duplicate_object then null; end $$;
+do $$ begin create policy "meetups own update" on public.meetups for update to authenticated using (auth.uid() = creator_id); exception when duplicate_object then null; end $$;
+do $$ begin create policy "meetups own delete" on public.meetups for delete to authenticated using (auth.uid() = creator_id); exception when duplicate_object then null; end $$;
 
-do $$ begin
-  create policy "members readable" on public.meetup_members for select to authenticated using (true);
-exception when duplicate_object then null; end $$;
-do $$ begin
-  create policy "members own insert" on public.meetup_members for insert to authenticated with check (auth.uid() = user_id);
-exception when duplicate_object then null; end $$;
-do $$ begin
-  create policy "members own delete" on public.meetup_members for delete to authenticated using (auth.uid() = user_id);
-exception when duplicate_object then null; end $$;
+do $$ begin create policy "members readable" on public.meetup_members for select to authenticated using (true); exception when duplicate_object then null; end $$;
+do $$ begin create policy "members own insert" on public.meetup_members for insert to authenticated with check (auth.uid() = user_id); exception when duplicate_object then null; end $$;
+do $$ begin create policy "members own delete" on public.meetup_members for delete to authenticated using (auth.uid() = user_id); exception when duplicate_object then null; end $$;
 
-do $$ begin
-  create policy "music votes readable" on public.music_votes for select to authenticated using (true);
-exception when duplicate_object then null; end $$;
-do $$ begin
-  create policy "music votes own insert" on public.music_votes for insert to authenticated with check (auth.uid() = user_id);
-exception when duplicate_object then null; end $$;
+do $$ begin create policy "music votes readable" on public.music_votes for select to authenticated using (true); exception when duplicate_object then null; end $$;
+do $$ begin create policy "music votes own insert" on public.music_votes for insert to authenticated with check (auth.uid() = user_id); exception when duplicate_object then null; end $$;
+do $$ begin create policy "music recommendations readable" on public.music_recommendations for select to authenticated using (true); exception when duplicate_object then null; end $$;
+do $$ begin create policy "music recommendations own insert" on public.music_recommendations for insert to authenticated with check (auth.uid() = user_id); exception when duplicate_object then null; end $$;
 
-do $$ begin
-  create policy "music recommendations readable" on public.music_recommendations for select to authenticated using (true);
-exception when duplicate_object then null; end $$;
-do $$ begin
-  create policy "music recommendations own insert" on public.music_recommendations for insert to authenticated with check (auth.uid() = user_id);
-exception when duplicate_object then null; end $$;
-
--- Keep meetup participant counts consistent with membership rows.
 create or replace function public.sync_meetup_member_count()
 returns trigger language plpgsql security definer set search_path = public as $$
 begin
-  if tg_op = 'INSERT' then
-    update public.meetups set joined_people = (select count(*) from public.meetup_members where meetup_id = new.meetup_id) where id = new.meetup_id;
-    return new;
-  elsif tg_op = 'DELETE' then
-    update public.meetups set joined_people = (select count(*) from public.meetup_members where meetup_id = old.meetup_id) where id = old.meetup_id;
-    return old;
-  end if;
-  return null;
+  update public.meetups
+  set joined_people = (select count(*) from public.meetup_members where meetup_id = coalesce(new.meetup_id, old.meetup_id))
+  where id = coalesce(new.meetup_id, old.meetup_id);
+  return coalesce(new, old);
 end $$;
 
 drop trigger if exists meetup_member_count_trigger on public.meetup_members;
-create trigger meetup_member_count_trigger
-after insert or delete on public.meetup_members
-for each row execute function public.sync_meetup_member_count();
+create trigger meetup_member_count_trigger after insert or delete on public.meetup_members for each row execute function public.sync_meetup_member_count();
 
--- Create the creator's membership automatically.
 create or replace function public.add_creator_as_member()
 returns trigger language plpgsql security definer set search_path = public as $$
 begin
@@ -179,29 +136,24 @@ begin
 end $$;
 
 drop trigger if exists meetup_creator_member_trigger on public.meetups;
-create trigger meetup_creator_member_trigger
-after insert on public.meetups
-for each row execute function public.add_creator_as_member();
+create trigger meetup_creator_member_trigger after insert on public.meetups for each row execute function public.add_creator_as_member();
 
--- Race-safe join operation. The client never directly increments joined_people.
 create or replace function public.join_meetup(p_meetup_id uuid)
 returns boolean language plpgsql security definer set search_path = public as $$
-declare
-  target public.meetups;
-  inserted_count integer;
+declare target public.meetups; inserted_count integer;
 begin
+  if auth.uid() is null then return false; end if;
   select * into target from public.meetups where id = p_meetup_id for update;
   if target.id is null or target.joined_people >= target.max_people then return false; end if;
   insert into public.meetup_members(meetup_id, user_id) values (p_meetup_id, auth.uid()) on conflict do nothing;
   get diagnostics inserted_count = row_count;
   return inserted_count = 1;
 end $$;
-
 grant execute on function public.join_meetup(uuid) to authenticated;
 
--- Realtime: collaborative screens.
 do $$ begin alter publication supabase_realtime add table public.posts; exception when duplicate_object then null; end $$;
 do $$ begin alter publication supabase_realtime add table public.post_likes; exception when duplicate_object then null; end $$;
 do $$ begin alter publication supabase_realtime add table public.meetups; exception when duplicate_object then null; end $$;
 do $$ begin alter publication supabase_realtime add table public.meetup_members; exception when duplicate_object then null; end $$;
+do $$ begin alter publication supabase_realtime add table public.music_votes; exception when duplicate_object then null; end $$;
 do $$ begin alter publication supabase_realtime add table public.music_recommendations; exception when duplicate_object then null; end $$;
