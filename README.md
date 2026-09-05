@@ -6,9 +6,6 @@ Create a polished, production-quality mobile-first web app called "차온 (CHAON
 
 1. 서비스 개요
 
-차온은 대한민국 경기도 시흥시 대야동에 있는 청소년 공유공간 **"차오름"**을 더 많은 청소년들이 이용하도록 만들기 위한 앱이다.
-
-차오름은 대야동 주민센터 2층에 위치한 청소년 공간이며, 다음과 같은 시설을 가지고 있다.
 
 댄스실
 
@@ -30,7 +27,6 @@ Create a polished, production-quality mobile-first web app called "차온 (CHAON
 
 2. 핵심 타깃
 
-주요 사용자는 대야동에 거주하거나 학교를 다니는 중학교 1~2학년 남녀 청소년이다.
 
 따라서 앱은 공공기관 홈페이지처럼 딱딱하거나 교육 서비스처럼 보이면 안 된다.
 
