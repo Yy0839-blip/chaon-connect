@@ -5,7 +5,7 @@ import { ShareCTA } from "@/components/chaon/ShareCTA";
 import { spaces } from "@/data/chaon";
 
 export const Route = createFileRoute("/spaces")({
-  head: () => ({ meta: [
+  head: () => ({ head: () => ({ meta: [
     { title: "놀거리 둘러보기 · 차오름 | 차온 CHAON" },
     { name: "description", content: "차오름에서 친구들과 즐길 수 있는 놀거리를 찾아봐요." },
   ] }),
@@ -13,10 +13,10 @@ export const Route = createFileRoute("/spaces")({
 });
 
 const photoBySpace: Record<string, { position: string; alt: string }> = {
-  dance: { position: "0% 0%", alt: "차오름 실제 복층 공간 사진" },
-  beam: { position: "100% 0%", alt: "차오름 실제 창가 공간 사진" },
-  board: { position: "100% 100%", alt: "차오름 실제 보드게임 사진" },
-  loft: { position: "0% 100%", alt: "차오름 실제 다목적 공간 사진" },
+  dance: { position: "left top", alt: "차오름 실제 복층 공간 사진" },
+  beam: { position: "right top", alt: "차오름 실제 창가 공간 사진" },
+  board: { position: "right bottom", alt: "차오름 실제 보드게임 사진" },
+  loft: { position: "left bottom", alt: "차오름 실제 다목적 공간 사진" },
 };
 
 const tone = {
@@ -40,17 +40,15 @@ function Spaces() {
         const photo = photoBySpace[s.id];
         return <div key={s.id}>
           <div className={`overflow-hidden rounded-3xl shadow-card ${tone[s.tone]}`}>
-            {photo && <div className="relative h-44 w-full overflow-hidden bg-muted">
-              <img
-                src="/images/chaon-spaces.jpg"
-                alt={photo.alt}
-                className="absolute max-w-none"
+            {photo && <div className="relative h-44 w-full overflow-hidden">
+              <div
+                aria-label={photo.alt}
+                role="img"
+                className="absolute inset-0 bg-no-repeat"
                 style={{
-                  width: "200%",
-                  height: "200%",
-                  objectFit: "cover",
-                  left: s.id === "beam" || s.id === "loft" ? "-100%" : "0",
-                  top: s.id === "loft" || s.id === "board" ? "-100%" : "0",
+                  backgroundImage: "url(/images/chaon-spaces.jpg)",
+                  backgroundSize: "200% 200%",
+                  backgroundPosition: photo.position,
                 }}
               />
             </div>}
